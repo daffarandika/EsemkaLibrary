@@ -3,6 +3,7 @@ package com.example.esemkalibrary
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -13,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.ui.theme.EsemkaLibraryTheme
 
@@ -30,19 +32,54 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             onSuccessfulLogin = {
                                 navController.navigate("main"){
-                                    popUpTo("login")
+                                    popUpTo("login") {
+                                        inclusive = true
+                                    }
                                 }
                             },
                             onSignUpClicked = {
-                                navController.navigate("signup")
+                                navController.navigate("signup") {
+                                    popUpTo("login") {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         )
                     }
                     composable("main") {
-                        Text("main")
+                        Column{
+                            Text("main")
+                            LibraryButton(
+                                onClick = {
+                                    navController.navigate("bookdetail")
+                                },
+                                text = "bookdetail"
+                            )
+                            LibraryButton(
+                                onClick = {
+                                    navController.navigate("addthread")
+                                },
+                                text = "addthread"
+                            )
+                            LibraryButton(
+                                onClick = {
+                                    navController.navigate("threaddetail")
+                                },
+                                text = "threaddetail"
+                            )
+                        }
                     }
                     composable("signup") {
                         Text("signup")
+                    }
+                    composable("bookdetail") {
+                        Text("bookdetail")
+                    }
+                    composable("addthread") {
+                        Text("addthread")
+                    }
+                    composable("threaddetail") {
+                        Text("threaddetail")
                     }
                 }
             }

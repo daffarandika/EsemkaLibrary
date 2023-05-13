@@ -14,7 +14,7 @@ import com.example.esemkalibrary.ui.theme.MudBrown
 @Composable
 fun LibraryButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit,
     text: String = "Button"
 ) {
     Button(
