@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
-import com.example.esemkalibrary.ui.theme.Grey
+import com.example.esemkalibrary.core.components.theme.Grey
 
 @Composable
 fun LibraryTextField(

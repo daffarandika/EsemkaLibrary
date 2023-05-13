@@ -1,4 +1,4 @@
-package com.example.esemkalibrary.ui.theme
+package com.example.esemkalibrary.core.components.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

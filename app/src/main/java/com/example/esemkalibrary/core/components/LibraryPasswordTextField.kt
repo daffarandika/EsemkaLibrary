@@ -18,7 +18,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.esemkalibrary.ui.theme.Grey
+import com.example.esemkalibrary.core.components.theme.Grey
 
 @Composable
 fun LibraryPasswordTextField(

@@ -16,7 +16,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.feature_login.ui.LoginScreen
-import com.example.esemkalibrary.ui.theme.EsemkaLibraryTheme
+import com.example.esemkalibrary.core.components.theme.EsemkaLibraryTheme
+import com.example.esemkalibrary.feature_main.ui.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,27 +48,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("main") {
-                        Column{
-                            Text("main")
-                            LibraryButton(
-                                onClick = {
-                                    navController.navigate("bookdetail")
-                                },
-                                text = "bookdetail"
-                            )
-                            LibraryButton(
-                                onClick = {
-                                    navController.navigate("addthread")
-                                },
-                                text = "addthread"
-                            )
-                            LibraryButton(
-                                onClick = {
-                                    navController.navigate("threaddetail")
-                                },
-                                text = "threaddetail"
-                            )
-                        }
+                        MainScreen()
                     }
                     composable("signup") {
                         Text("signup")

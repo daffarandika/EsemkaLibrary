@@ -17,7 +17,7 @@ import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
 import com.example.esemkalibrary.core.components.LibraryTextField
-import com.example.esemkalibrary.ui.theme.SandBrown
+import com.example.esemkalibrary.core.components.theme.SandBrown
 
 @Composable
 fun LoginScreen(
@@ -75,11 +75,12 @@ fun LoginScreen(
         )
         Spacer(Modifier.size(16.dp))
         LibraryButton(text = "Login", onClick = {
-            isEmailError = email.isBlank()
-            isPasswordError = password.isBlank()
-            if (!(isPasswordError or isEmailError)) {
-                onSuccessfulLogin()
-            }
+//            isEmailError = email.isBlank()
+//            isPasswordError = password.isBlank()
+//            if (!(isPasswordError or isEmailError)) {
+//                onSuccessfulLogin()
+//            }
+            onSuccessfulLogin()
         })
         Spacer(Modifier.size(4.dp))
         LibraryButton(text = "Sign Up", onClick = onSignUpClicked)
