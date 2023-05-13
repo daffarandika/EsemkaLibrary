@@ -3,6 +3,7 @@ package com.example.esemkalibrary
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -17,9 +18,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.core.components.theme.EsemkaLibraryTheme
+import com.example.esemkalibrary.feature_bookdetail.ui.BookDetailScreen
 import com.example.esemkalibrary.feature_main.ui.MainScreen
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalFoundationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -48,13 +51,15 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("main") {
-                        MainScreen()
+                        MainScreen(onBookClicked = {
+                            navController.navigate("bookdetail")
+                        })
                     }
                     composable("signup") {
                         Text("signup")
                     }
                     composable("bookdetail") {
-                        Text("bookdetail")
+                        BookDetailScreen(id = "9")
                     }
                     composable("addthread") {
                         Text("addthread")
