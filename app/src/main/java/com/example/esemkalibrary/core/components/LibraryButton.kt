@@ -19,7 +19,7 @@ fun LibraryButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier,
+        modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MudBrown,
         ),
@@ -30,7 +30,6 @@ fun LibraryButton(
     ) {
         Text(
             text = text,
-            modifier = modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
     }

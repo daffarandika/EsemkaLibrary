@@ -51,9 +51,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("main") {
-                        MainScreen(onBookClicked = {
-                            navController.navigate("bookdetail")
-                        })
+                        MainScreen()
                     }
                     composable("signup") {
                         Text("signup")

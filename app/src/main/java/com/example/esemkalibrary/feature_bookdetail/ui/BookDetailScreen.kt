@@ -16,24 +16,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.DirtBrown
+import com.example.esemkalibrary.core.components.theme.MudBrown
 
 @Composable
 fun BookDetailScreen(modifier: Modifier = Modifier, id: String) {
-    Scaffold(floatingActionButton = {
-        FloatingActionButton(onClick = {
-        },
-            backgroundColor = DirtBrown,
-            shape = RoundedCornerShape(5),
-            modifier = Modifier
-                .fillMaxWidth(0.91f)
-                .padding(4.dp)
-            ,
-            elevation = FloatingActionButtonDefaults.elevation(
-                defaultElevation = 4.dp
-            )
-        ) {
-            Text("Add to Cart")
-        }
+    Scaffold(
+        modifier = modifier,
+        backgroundColor = DirtBrown,
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+            },
+                backgroundColor = MudBrown,
+                shape = RoundedCornerShape(5),
+                modifier = Modifier
+                    .fillMaxWidth(0.91f)
+                    .padding(4.dp)
+                ,
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 4.dp
+                )
+            ) {
+                Text("Add to Cart")
+            }
     }) {
         Column(
             modifier = modifier

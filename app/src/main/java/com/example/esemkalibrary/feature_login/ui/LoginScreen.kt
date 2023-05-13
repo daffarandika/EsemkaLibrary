@@ -25,7 +25,6 @@ fun LoginScreen(
     onSuccessfulLogin:() -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
-    val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
@@ -80,9 +79,10 @@ fun LoginScreen(
 //            if (!(isPasswordError or isEmailError)) {
 //                onSuccessfulLogin()
 //            }
-            onSuccessfulLogin()
-        })
+                onSuccessfulLogin()
+            }, modifier = Modifier.fillMaxWidth()
+        )
         Spacer(Modifier.size(4.dp))
-        LibraryButton(text = "Sign Up", onClick = onSignUpClicked)
+        LibraryButton(text = "Sign Up", onClick = onSignUpClicked, modifier = Modifier.fillMaxWidth())
     }
 }
