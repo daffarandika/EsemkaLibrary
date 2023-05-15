@@ -48,17 +48,26 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
                 Spacer(modifier.size(25.dp))
                 Column(Modifier
                     .background(Color.White)
-                    .fillMaxHeight(0.5f)
+                    .fillMaxHeight(0.5f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text("Date Borrow:")
-                    Row(modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    Text("Date Borrow:",modifier = Modifier.align(Alignment.Start))
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally)
+                        ,
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically) {
-                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier.weight(1f))
+                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
+                            .width(165.dp)
+                        )
                         Text("-")
-                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier.weight(1f))
+                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
+                            .width(165.dp)
+                        )
                     }
-                    LibraryButton(onClick = { /*TODO*/ }, modifier = modifier.fillMaxWidth(), text = "Booking Borrow")
+                    LibraryButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
                 }
             }
         }
