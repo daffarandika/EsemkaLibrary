@@ -40,7 +40,7 @@ fun LibraryPasswordTextField(
                 backgroundColor = White,
                 cursorColor = Grey
             ),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = isError,

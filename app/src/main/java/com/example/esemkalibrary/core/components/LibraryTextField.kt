@@ -21,9 +21,12 @@ fun LibraryTextField(
     value: String,
     isError: Boolean= false,
     onValueChange: (String) -> Unit,
+    showLabel: Boolean = true
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(labelText, modifier.align(Alignment.Start))
+        if (showLabel){
+            Text(labelText, modifier.align(Alignment.Start))
+        }
         OutlinedTextField(value = value,
             onValueChange = onValueChange,
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -32,7 +35,7 @@ fun LibraryTextField(
                 backgroundColor = White,
                 cursorColor = Grey
             ),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             isError = isError,
             trailingIcon = {
                 if (isError) {

@@ -29,6 +29,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .background(SandBrown)
+            .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -53,10 +54,10 @@ fun LoginScreen(
         )
 
         LibraryTextField(value = email,
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = {
                 email = it
             },
-            modifier = Modifier.fillMaxWidth(),
             isError = isEmailError,
             labelText = "Email")
         Spacer(Modifier.size(4.dp))

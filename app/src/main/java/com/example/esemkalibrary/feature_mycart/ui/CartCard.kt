@@ -1,12 +1,14 @@
-package com.example.esemkalibrary.feature_forum.ui
+package com.example.esemkalibrary.feature_mycart.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
@@ -25,7 +27,7 @@ fun CartCard(modifier: Modifier = Modifier, book: Book) {
             contentDescription = "Book Image",
             modifier = Modifier.size(128.dp)
         )
-        Column(modifier.fillMaxWidth()) {
+        Column(modifier.fillMaxWidth().height(128.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = book.name,
                 fontSize = 18.sp,
@@ -34,21 +36,41 @@ fun CartCard(modifier: Modifier = Modifier, book: Book) {
             Text(
                 text = book.authors,
             )
-            Box(modifier.fillMaxWidth()) {
-                Column(modifier) {
-                    Row(modifier) {
-                        Text( text = "ISBN-10:", fontWeight = FontWeight.Bold )
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(Modifier) {
+                    Row(Modifier) {
+                        Text( text = "ISBN-10: ", fontWeight = FontWeight.Bold )
                         Text( text = book.isbn )
                     }
-                    Row(modifier) {
-                        Text( text = "Available", fontWeight = FontWeight.Bold )
+                    Row(Modifier) {
+                        Text( text = "Available: ", fontWeight = FontWeight.Bold )
                         Text( text = book.available.toString() )
                     }
                 }
-                Column(modifier) {
-                    LibraryButton(onClick = { /*TODO*/ })
+                Column(Modifier) {
+                    LibraryButton(onClick = { /*TODO*/ }, text = "Remove")
                 }
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun CartPrevCard() {
+    CartCard(book =
+    Book(
+        id = "12",
+        name = "database design",
+        authors = "uncle bob",
+        isbn = "21441-421",
+        publisher = "7 Seas",
+        available = 12,
+        description = "A book"
+    ),
+    )
 }

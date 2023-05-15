@@ -23,8 +23,8 @@ fun BottomTabIndicator(
     onClick: () -> Unit
 ) {
     Column(modifier = modifier
-        .background(color = MudBrown)
-        .border(width = 1.dp, color = DirtBrown)
+        .background(color = DirtBrown)
+        .border(width = 1.dp, color = MudBrown)
         .clickable {onClick()}
         .padding(8.dp)
     ,

@@ -32,7 +32,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                             GridItemSpan(this.maxCurrentLineSpan)
                         }) {
                             Column(modifier.padding(8.dp)) {
-                                LibraryTextField(value = "", onValueChange = {}, labelText = "Search")
+                                LibraryTextField(value = "", onValueChange = {}, labelText = "Search", modifier = Modifier.fillMaxWidth())
                             }
                         }
                         items(listOf(
