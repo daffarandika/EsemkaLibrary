@@ -20,6 +20,7 @@ import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.core.components.theme.EsemkaLibraryTheme
 import com.example.esemkalibrary.feature_bookdetail.ui.BookDetailScreen
 import com.example.esemkalibrary.feature_main.ui.MainScreen
+import com.example.esemkalibrary.feature_signup.ui.SignUpScreen
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalFoundationApi::class)
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         MainScreen()
                     }
                     composable("signup") {
-                        Text("signup")
+                        SignUpScreen()
                     }
                     composable("bookdetail") {
                         BookDetailScreen(id = "9")
