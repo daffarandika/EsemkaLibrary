@@ -17,16 +17,17 @@ import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.DirtBrown
 import com.example.esemkalibrary.core.components.theme.MudBrown
+import com.example.esemkalibrary.core.components.theme.SandBrown
 
 @Composable
 fun BookDetailScreen(modifier: Modifier = Modifier, id: String) {
     Scaffold(
         modifier = modifier,
-        backgroundColor = DirtBrown,
+        backgroundColor = SandBrown,
         floatingActionButton = {
             FloatingActionButton(onClick = {
             },
-                backgroundColor = MudBrown,
+                backgroundColor = DirtBrown,
                 shape = RoundedCornerShape(5),
                 modifier = Modifier
                     .fillMaxWidth(0.91f)

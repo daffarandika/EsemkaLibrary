@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryTextField
@@ -20,151 +21,12 @@ import com.example.esemkalibrary.core.components.theme.Grey
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.model.Book
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyCartScreen(modifier: Modifier = Modifier) {
-    BottomSheetScaffold(
-        backgroundColor = SandBrown,
-        scaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-        ),
-        sheetShape = RoundedCornerShape(topStartPercent = 8, topEndPercent = 8),
-        sheetContent = {
-            Column(
-                modifier
-                    .fillMaxWidth()
-                    .padding(top = 25.dp)
-                    .padding(horizontal = 16.dp)
-                ,
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(color = Grey.copy(alpha = 0.2f), shape = RoundedCornerShape(50))
-                        .width(64.dp)
-                        .height(4.dp)
-                )
-                Spacer(modifier.size(25.dp))
-                Column(Modifier
-                    .background(Color.White)
-                    .fillMaxHeight(0.5f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text("Date Borrow:",modifier = Modifier.align(Alignment.Start))
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterHorizontally)
-                        ,
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
-                            .width(165.dp)
-                        )
-                        Text("-")
-                        LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
-                            .width(165.dp)
-                        )
-                    }
-                    LibraryButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
-                }
-            }
-        }
-    ) {
-        LazyColumn(modifier.fillMaxSize()) {
+    Column {
+        LazyColumn(modifier = modifier.weight(1f, fill = false)) {
             items(
                 listOf(
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
                     Book(
                         id = "12",
                         name = "database design",
@@ -277,9 +139,44 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
             ) { book ->
                 CartCard(book = book)
             }
-            item {
-                Spacer(modifier.size(64.dp))
+        }
+        Column(
+            modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(16.dp)
+            ,
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text("Date Borrow:",modifier = Modifier.align(Alignment.Start))
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    ,
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
+                        .width(165.dp)
+                    )
+                    Text("-")
+                    LibraryTextField(value = "21 Sept 2022", onValueChange = {}, showLabel = false, modifier = Modifier
+                        .width(165.dp)
+                    )
+                }
+                LibraryButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun CartScreenPrev() {
+    MyCartScreen(modifier = Modifier.fillMaxSize())
 }

@@ -68,7 +68,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
             ),
         )
         { borrow ->
-            BorrowingCard(borrowDetail = borrow)
+            ProfileBorrowingCard(borrowDetail = borrow)
         }
     }
 }

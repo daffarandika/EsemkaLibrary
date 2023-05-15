@@ -18,7 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.feature_bookdetail.ui.BookDetailScreen
+import com.example.esemkalibrary.feature_borrowingdetail.ui.BorrowingDetailScreen
 import com.example.esemkalibrary.feature_forum.ui.ForumScreen
+import com.example.esemkalibrary.feature_forum.ui.ThreadDetailScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
@@ -62,13 +64,13 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     HomeScreen()
                 }
                 1 -> {
-                    ForumScreen()
+                    ThreadDetailScreen()
                 }
                 2 -> {
                     MyCartScreen()
                 }
                 3 -> {
-                    MyProfileScreen()
+                    BorrowingDetailScreen()
                 }
             }
         }

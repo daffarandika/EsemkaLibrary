@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.example.esemkalibrary.feature_myprofile.data.BorrowDetail
 
 @Composable
-fun BorrowingCard(modifier: Modifier = Modifier, borrowDetail: BorrowDetail) {
+fun ProfileBorrowingCard(modifier: Modifier = Modifier, borrowDetail: BorrowDetail) {
     Row(
         modifier = modifier
             .background(shape = RoundedCornerShape(10), color = Color.White)

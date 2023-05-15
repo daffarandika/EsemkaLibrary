@@ -21,7 +21,8 @@ fun LibraryTextField(
     value: String,
     isError: Boolean= false,
     onValueChange: (String) -> Unit,
-    showLabel: Boolean = true
+    showLabel: Boolean = true,
+    hint: @Composable () -> Unit = {},
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (showLabel){
@@ -41,7 +42,8 @@ fun LibraryTextField(
                 if (isError) {
                     Icon(Icons.Filled.Error, "Error")
                 }
-            }
+            },
+            placeholder = hint
         )
     }
 }
