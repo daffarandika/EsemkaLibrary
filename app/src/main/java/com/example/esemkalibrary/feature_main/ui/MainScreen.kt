@@ -12,18 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.SandBrown
-import com.example.esemkalibrary.feature_bookdetail.ui.BookDetailScreen
 import com.example.esemkalibrary.feature_borrowingdetail.ui.BorrowingDetailScreen
-import com.example.esemkalibrary.feature_forum.ui.ForumScreen
-import com.example.esemkalibrary.feature_forum.ui.ThreadDetailScreen
+import com.example.esemkalibrary.feature_forum.ui.AddThreadScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
-import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
 
 @ExperimentalFoundationApi
 @Composable
@@ -64,7 +58,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                     HomeScreen()
                 }
                 1 -> {
-                    ThreadDetailScreen()
+                    AddThreadScreen()
                 }
                 2 -> {
                     MyCartScreen()
