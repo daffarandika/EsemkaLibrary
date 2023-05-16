@@ -1,18 +1,14 @@
 package com.example.esemkalibrary.feature_login.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
@@ -25,6 +21,7 @@ fun LoginScreen(
     onSuccessfulLogin:() -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
+    val viewModel: LoginViewModel = viewModel()
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
@@ -33,54 +30,43 @@ fun LoginScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var email by remember {
-            mutableStateOf("")
-        }
-        var password by remember {
-            mutableStateOf("")
-        }
-        var showPassword by remember {
-            mutableStateOf(false)
-        }
-        var isEmailError by remember {
-            mutableStateOf(false)
-        }
-        var isPasswordError by remember {
-            mutableStateOf(false)
-        }
+
+        val uiState = viewModel.uiState.collectAsState()
+
         Image(
             painterResource(id = R.drawable.favicon),
             "Logo"
         )
 
-        LibraryTextField(value = email,
+        LibraryTextField(value = uiState.value.email,
             modifier = Modifier.fillMaxWidth(),
             onValueChange = {
-                email = it
+                viewModel.updateEmailInput(it)
             },
-            isError = isEmailError,
+            isError = uiState.value.isEmailError,
             labelText = "Email")
         Spacer(Modifier.size(4.dp))
-        LibraryPasswordTextField(value = password,
+        LibraryPasswordTextField(value = uiState.value.password,
             onValueChange = {
-                password = it
+                viewModel.updatePasswordInput(it)
             },
             modifier = Modifier.fillMaxWidth(),
             labelText = "Password",
             onShowPasswordChange = {
-                showPassword = !showPassword
+                viewModel.updatePasswordVisibility(!uiState.value.isPasswordVisible)
             },
-            showPassword = showPassword,
-            isError = isPasswordError
+            showPassword = uiState.value.isPasswordVisible,
+            isError = uiState.value.isPasswordError
         )
         Spacer(Modifier.size(16.dp))
         LibraryButton(text = "Login", onClick = {
-//            isEmailError = email.isBlank()
-//            isPasswordError = password.isBlank()
-//            if (!(isPasswordError or isEmailError)) {
-//                onSuccessfulLogin()
-//            }
+            if (!viewModel.isReadyToLogin()) {
+                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
+                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
+            } else {
+                viewModel.getToken()
                 onSuccessfulLogin()
+            }
             }, modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.size(4.dp))
