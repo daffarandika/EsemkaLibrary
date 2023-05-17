@@ -54,7 +54,7 @@ fun LoginScreen(
                 viewModel.updateEmailInput(it)
             },
             isError = uiState.value.isEmailError,
-            labelText = emailLabel)
+            labelText = "Email")
         Spacer(Modifier.size(4.dp))
         LibraryPasswordTextField(value = uiState.value.password,
             onValueChange = {
@@ -70,27 +70,22 @@ fun LoginScreen(
         )
         Spacer(Modifier.size(16.dp))
         LibraryButton(text = "Login", onClick = {
-            navController.navigate(route = Screen.Main.route) {
-                popUpTo(route = Screen.Login.route) {
-                    inclusive = true
+            if (!viewModel.isReadyToLogin()) {
+                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
+                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
+            } else {
+                viewModel.getAndSaveToken()
+                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
+                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
+                        .show()
+                }
+//                onSuccessfulLogin()
+                navController.navigate(route = Screen.Main.route) {
+                    popUpTo(route = Screen.Login.route) {
+                        inclusive = true
+                    }
                 }
             }
-//            if (!viewModel.isReadyToLogin()) {
-//                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
-//                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
-//            } else {
-//                viewModel.getAndSaveToken()
-//                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
-//                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-////                onSuccessfulLogin()
-//                navController.navigate(route = Screen.Home.route) {
-//                    popUpTo(route = Screen.Login.route) {
-//                        inclusive = true
-//                    }
-//                }
-//            }
             }, modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.size(4.dp))

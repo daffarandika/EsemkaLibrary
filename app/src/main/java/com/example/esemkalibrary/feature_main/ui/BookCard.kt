@@ -15,11 +15,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.model.Book
+import com.example.esemkalibrary.core.model.BookHeader
 
 @Composable
 fun BookCard(
     modifier: Modifier = Modifier,
-    book: Book,
+    book: BookHeader,
     onClick: (String) -> Unit
 ) {
     Column(
