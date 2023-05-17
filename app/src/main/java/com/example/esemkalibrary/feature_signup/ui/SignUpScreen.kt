@@ -77,7 +77,8 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                               viewModel.updatePasswordError(true)
                               viewModel.updateCPasswordError(true)
                               Toast.makeText(ctx, "Password and password confirmation does not match", Toast.LENGTH_SHORT).show()
-                          } else if (viewModel.isEmailValid()) {
+                          }
+                          if (!viewModel.isEmailValid()) {
                               Toast.makeText(ctx, "email is not valid", Toast.LENGTH_SHORT).show()
                           }
                       } else {

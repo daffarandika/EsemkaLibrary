@@ -61,5 +61,5 @@ class SignUpViewModel: ViewModel() {
     fun isEverythingFilled() = (uiState.value.name.isNotBlank() and uiState.value.password.isNotBlank() and uiState.value.cPassword.isNotBlank() and uiState.value.email.isNotBlank() )
     fun passwordsDoNotMatch() = (uiState.value.password != uiState.value.cPassword)
     fun isEmailValid() = (uiState.value.email.contains("@", true) and uiState.value.email.contains(".", true))
-    fun isReadyToSignUp() = (isEverythingFilled() and (!passwordsDoNotMatch()))
+    fun isReadyToSignUp() = (isEverythingFilled() and (!passwordsDoNotMatch()) and isEmailValid())
 }
