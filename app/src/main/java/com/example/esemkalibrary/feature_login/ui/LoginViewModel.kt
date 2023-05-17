@@ -1,20 +1,17 @@
 package com.example.esemkalibrary.feature_login.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.esemkalibrary.core.data.LocalStorage
-import com.example.esemkalibrary.core.data.LocalStorage.Companion.dataStore
 import com.example.esemkalibrary.feature_login.data.ApiService
 import com.example.esemkalibrary.feature_login.data.LoginUiState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class LoginViewModel(val context: Context): ViewModel() {
+class LoginViewModel(context: Context): ViewModel() {
 
-    val dataStore = LocalStorage(context)
+    private val dataStore = LocalStorage(context)
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -49,7 +46,7 @@ class LoginViewModel(val context: Context): ViewModel() {
     fun isReadyToLogin(): Boolean = (uiState.value.email.isNotBlank() and uiState.value.password.isNotBlank())
 
     private val apiService = ApiService()
-    fun getToken() {
+    fun getAndSaveToken() {
         viewModelScope.launch {
             apiService.getToken(uiState.value.email, uiState.value.password).collect {
                 dataStore.setToken(it)

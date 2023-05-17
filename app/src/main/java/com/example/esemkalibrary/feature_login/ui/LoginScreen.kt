@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
@@ -72,7 +71,7 @@ fun LoginScreen(
                 if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
                 if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
             } else {
-                viewModel.getToken()
+                viewModel.getAndSaveToken()
 //                onSuccessfulLogin()
             }
             }, modifier = Modifier.fillMaxWidth()
