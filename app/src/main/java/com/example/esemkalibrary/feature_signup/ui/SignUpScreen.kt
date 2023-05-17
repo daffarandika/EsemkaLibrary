@@ -43,7 +43,6 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
             isError = uiState.value.isNameError,
             modifier = Modifier.fillMaxWidth())
         LibraryPasswordTextField(onShowPasswordChange = {
-            Toast.makeText(ctx, "${uiState.value.isPasswordVisible}", Toast.LENGTH_SHORT).show()
                 viewModel.updatePasswordVisibility(!uiState.value.isPasswordVisible)
             },
             value = uiState.value.password,
@@ -77,11 +76,22 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
                               viewModel.updatePasswordError(true)
                               viewModel.updateCPasswordError(true)
                               Toast.makeText(ctx, "Password and password confirmation does not match", Toast.LENGTH_SHORT).show()
+                          } else {
+                              viewModel.updatePasswordError(false)
+                              viewModel.updateCPasswordError(false)
                           }
                           if (!viewModel.isEmailValid()) {
+                              viewModel.updateEmailError(true)
                               Toast.makeText(ctx, "email is not valid", Toast.LENGTH_SHORT).show()
                           }
+                          if (!viewModel.isPasswordValid()) {
+                              viewModel.updatePasswordError(true)
+                              Toast.makeText(ctx, "Invalid password", Toast.LENGTH_SHORT).show()
+                          } else {
+                              viewModel.updatePasswordError(false)
+                          }
                       } else {
+                          viewModel.signUp()
                           Toast.makeText(ctx, "Success", Toast.LENGTH_SHORT).show()
                       }
             }, text = "Sign Up", modifier = Modifier.fillMaxWidth())

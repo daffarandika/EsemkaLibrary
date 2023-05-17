@@ -24,19 +24,6 @@ class ApiService {
         conn.setRequestProperty("Accept", "application/json")
     }
 
-    suspend fun isLoginCredentialsValid(email: String, password: String): Boolean {
-
-        withContext(Dispatchers.IO) {
-            val outputStreamWriter = OutputStreamWriter(conn.outputStream)
-            outputStreamWriter.write("{\n" +
-                    "   \"email\": \"$email\",\n" +
-                    "   \"password\": \"$password\"\n" +
-                    "}")
-            outputStreamWriter.flush()
-        }
-        return conn.responseCode == 200
-    }
-
     suspend fun getToken(email: String, password: String): Flow<String> {
         return flow {
             val outputStreamWriter = OutputStreamWriter(conn.outputStream)
