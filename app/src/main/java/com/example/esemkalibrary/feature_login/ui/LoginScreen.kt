@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
@@ -21,7 +23,13 @@ fun LoginScreen(
     onSuccessfulLogin:() -> Unit,
     onSignUpClicked: () -> Unit,
 ) {
-    val viewModel: LoginViewModel = viewModel()
+    val viewModel: LoginViewModel = viewModel(factory = com.example.esemkalibrary.core.utils.viewModelFactory {
+        LoginViewModel(LocalContext.current)
+    })
+    var emailLabel by remember {
+        mutableStateOf("")
+    }
+    emailLabel = viewModel.token.collectAsState(initial = "").value
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
@@ -44,7 +52,7 @@ fun LoginScreen(
                 viewModel.updateEmailInput(it)
             },
             isError = uiState.value.isEmailError,
-            labelText = "Email")
+            labelText = emailLabel)
         Spacer(Modifier.size(4.dp))
         LibraryPasswordTextField(value = uiState.value.password,
             onValueChange = {
@@ -65,7 +73,7 @@ fun LoginScreen(
                 if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
             } else {
                 viewModel.getToken()
-                onSuccessfulLogin()
+//                onSuccessfulLogin()
             }
             }, modifier = Modifier.fillMaxWidth()
         )
