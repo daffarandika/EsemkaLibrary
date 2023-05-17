@@ -1,5 +1,6 @@
 package com.example.esemkalibrary.feature_login.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,7 @@ fun LoginScreen(
     var emailLabel by remember {
         mutableStateOf("")
     }
+    val ctx = LocalContext.current
     emailLabel = viewModel.token.collectAsState(initial = "").value
     Column(
         verticalArrangement = Arrangement.Center,
@@ -72,6 +74,10 @@ fun LoginScreen(
                 if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
             } else {
                 viewModel.getAndSaveToken()
+                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
+                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
+                        .show()
+                }
 //                onSuccessfulLogin()
             }
             }, modifier = Modifier.fillMaxWidth()

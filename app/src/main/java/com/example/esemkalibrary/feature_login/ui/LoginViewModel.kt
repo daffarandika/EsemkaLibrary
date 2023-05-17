@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.feature_login.data.ApiService
 import com.example.esemkalibrary.feature_login.data.LoginUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -43,14 +44,32 @@ class LoginViewModel(context: Context): ViewModel() {
             it.copy(isEmailError = isEmailError)
         }
     }
+
+    fun updateLoginErrorMessage(errorMessage: String?) {
+        _uiState.update{
+            it.copy(loginErrorMessage = errorMessage)
+        }
+    }
     fun isReadyToLogin(): Boolean = (uiState.value.email.isNotBlank() and uiState.value.password.isNotBlank())
 
-    private val apiService = ApiService()
+
     fun getAndSaveToken() {
+        val apiService = ApiService()
         viewModelScope.launch {
-            apiService.getToken(uiState.value.email, uiState.value.password).collect {
-                dataStore.setToken(it)
+
+            try {
+                apiService.getToken(uiState.value.email, uiState.value.password).collect {
+                    dataStore.setToken(it)
+                }
+                _uiState.update {
+                    it.copy(loginErrorMessage = null)
+                }
+            } catch (e: java.lang.Exception) {
+                _uiState.update {
+                    it.copy(loginErrorMessage = e.message.toString())
+                }
             }
+
         }
     }
 

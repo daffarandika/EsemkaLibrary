@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -23,6 +24,19 @@ class ApiService {
         conn.setRequestProperty("Accept", "application/json")
     }
 
+    suspend fun isLoginCredentialsValid(email: String, password: String): Boolean {
+
+        withContext(Dispatchers.IO) {
+            val outputStreamWriter = OutputStreamWriter(conn.outputStream)
+            outputStreamWriter.write("{\n" +
+                    "   \"email\": \"$email\",\n" +
+                    "   \"password\": \"$password\"\n" +
+                    "}")
+            outputStreamWriter.flush()
+        }
+        return conn.responseCode == 200
+    }
+
     suspend fun getToken(email: String, password: String): Flow<String> {
         return flow {
             val outputStreamWriter = OutputStreamWriter(conn.outputStream)
@@ -31,6 +45,9 @@ class ApiService {
                     "   \"password\": \"$password\"\n" +
                     "}")
             outputStreamWriter.flush()
+            if (conn.responseCode != 200) {
+                throw Exception("Invalid email or password")
+            }
             val input = conn.inputStream.bufferedReader().readText()
             val jsonObject = JSONObject(input)
             emit(jsonObject.getString("token"))
