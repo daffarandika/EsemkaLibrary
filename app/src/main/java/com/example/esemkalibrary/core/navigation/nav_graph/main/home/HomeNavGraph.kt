@@ -11,7 +11,7 @@ import com.example.esemkalibrary.feature_bookdetail.ui.BookDetailScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
 
 @ExperimentalFoundationApi
-fun NavGraphBuilder.homeGraph(navController: NavHostController) {
+fun NavGraphBuilder.homeNavGraph(navController: NavHostController) {
     navigation(startDestination = Screen.Home.route, route = HOME_GRAPH_ROUTE) {
         composable(route = Screen.Home.route) {
             HomeScreen(navController = navController)

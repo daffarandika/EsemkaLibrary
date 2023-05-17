@@ -13,12 +13,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
+import com.example.esemkalibrary.core.navigation.Screen
 import com.example.esemkalibrary.feature_myprofile.data.BorrowDetail
 
 @Composable
-fun MyProfileScreen(modifier: Modifier = Modifier) {
+fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostController) {
     LazyColumn(
         modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -68,7 +70,9 @@ fun MyProfileScreen(modifier: Modifier = Modifier) {
             ),
         )
         { borrow ->
-            ProfileBorrowingCard(borrowDetail = borrow)
+            ProfileBorrowingCard(borrowDetail = borrow, onClick =  {
+                navController.navigate(Screen.BorrowingDetail.route)
+            })
         }
     }
 }

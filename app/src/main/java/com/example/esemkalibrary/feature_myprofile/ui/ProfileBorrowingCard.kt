@@ -1,6 +1,7 @@
 package com.example.esemkalibrary.feature_myprofile.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -11,12 +12,17 @@ import androidx.compose.ui.unit.dp
 import com.example.esemkalibrary.feature_myprofile.data.BorrowDetail
 
 @Composable
-fun ProfileBorrowingCard(modifier: Modifier = Modifier, borrowDetail: BorrowDetail) {
+fun ProfileBorrowingCard(
+    modifier: Modifier = Modifier,
+    borrowDetail: BorrowDetail,
+    onClick: () -> Unit
+) {
     Row(
         modifier = modifier
             .background(shape = RoundedCornerShape(10), color = Color.White)
             .padding(8.dp)
             .fillMaxWidth()
+            .clickable { onClick() }
         ,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
