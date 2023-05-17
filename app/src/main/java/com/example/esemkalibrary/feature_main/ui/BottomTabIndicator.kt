@@ -12,20 +12,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.esemkalibrary.core.components.theme.DirtBrown
 import com.example.esemkalibrary.core.components.theme.MudBrown
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.core.navigation.Screen
 
 @Composable
 fun BottomTabIndicator(
     modifier: Modifier = Modifier,
     text: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(modifier = modifier
         .background(color = DirtBrown)
         .border(width = 1.dp, color = MudBrown)
-        .clickable {onClick()}
+        .clickable {
+            onClick()
+        }
         .padding(8.dp)
     ,
         verticalArrangement = Arrangement.Center,

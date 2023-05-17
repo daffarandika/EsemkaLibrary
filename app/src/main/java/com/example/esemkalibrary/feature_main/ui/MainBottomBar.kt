@@ -4,24 +4,39 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.example.esemkalibrary.core.components.theme.MudBrown
+import androidx.compose.ui.platform.textInputServiceFactory
+import androidx.core.graphics.scaleMatrix
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.feature_main.data.BottomNavigationItem
 
 @Composable
 fun MainBottomBar(
     modifier: Modifier = Modifier,
-    items: List<String>,
-    onActiveIndexChange: (Int) -> Unit,
+    items: List<BottomNavigationItem>,
+    navController: NavHostController,
 ) {
-    Row(modifier.fillMaxWidth().background(SandBrown)) {
+    Row(modifier
+        .fillMaxWidth()
+        .background(SandBrown)) {
         items.forEachIndexed { index, item ->
             BottomTabIndicator(
-                text = item,
+                text = item.text,
+                modifier = Modifier.weight((100/items.size).toFloat()),
                 onClick = {
-                    onActiveIndexChange(index)
-                },
-                modifier = Modifier.weight((100/items.size).toFloat())
+                    navController.navigate(item.screen.route) {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                }
             )
         }
     }

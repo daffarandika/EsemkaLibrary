@@ -12,11 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.core.navigation.Screen
+import com.example.esemkalibrary.core.navigation.nav_graph.main.MainNavGraph
 import com.example.esemkalibrary.feature_borrowingdetail.ui.BorrowingDetailScreen
 import com.example.esemkalibrary.feature_forum.ui.AddThreadScreen
+import com.example.esemkalibrary.feature_forum.ui.ForumScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
+import com.example.esemkalibrary.feature_main.data.BottomNavigationItem
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 
 @ExperimentalFoundationApi
@@ -25,6 +31,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
     var activeIndex by remember {
         mutableStateOf(0)
     }
+    val navController = rememberNavController()
     Scaffold(
         topBar = {
             TopAppBar(backgroundColor = Color.White) {
@@ -45,28 +52,19 @@ fun MainScreen(modifier: Modifier = Modifier) {
         },
         bottomBar = {
             MainBottomBar(
-                items = listOf("Home", "Forum", "My Cart", "My Profile"),
-                onActiveIndexChange = {
-                    activeIndex = it
-                })
+                items = listOf(
+                    BottomNavigationItem(text = "Home", screen = Screen.Home),
+                    BottomNavigationItem(text = "Forum", screen = Screen.Forum),
+                    BottomNavigationItem(text = "My Cart", screen = Screen.Cart),
+                    BottomNavigationItem(text = "My Profile", screen = Screen.Profile),
+                ),
+                navController = navController
+            )
         },
         backgroundColor = SandBrown
     ) {
         Box(modifier.padding(it)) {
-            when (activeIndex) {
-                0 -> {
-                    HomeScreen()
-                }
-                1 -> {
-                    AddThreadScreen()
-                }
-                2 -> {
-                    MyCartScreen()
-                }
-                3 -> {
-                    BorrowingDetailScreen()
-                }
-            }
+            MainNavGraph(navController = navController)
         }
     }
 }

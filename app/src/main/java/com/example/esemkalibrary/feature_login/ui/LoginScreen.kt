@@ -11,17 +11,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.core.navigation.Screen
 
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onSuccessfulLogin:() -> Unit,
-    onSignUpClicked: () -> Unit,
+    navController: NavController
 ) {
     val viewModel: LoginViewModel = viewModel(factory = com.example.esemkalibrary.core.utils.viewModelFactory {
         LoginViewModel(LocalContext.current)
@@ -69,20 +70,32 @@ fun LoginScreen(
         )
         Spacer(Modifier.size(16.dp))
         LibraryButton(text = "Login", onClick = {
-            if (!viewModel.isReadyToLogin()) {
-                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
-                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
-            } else {
-                viewModel.getAndSaveToken()
-                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
-                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
-                        .show()
+            navController.navigate(route = Screen.Main.route) {
+                popUpTo(route = Screen.Login.route) {
+                    inclusive = true
                 }
-//                onSuccessfulLogin()
             }
+//            if (!viewModel.isReadyToLogin()) {
+//                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
+//                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
+//            } else {
+//                viewModel.getAndSaveToken()
+//                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
+//                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
+//                        .show()
+//                }
+////                onSuccessfulLogin()
+//                navController.navigate(route = Screen.Home.route) {
+//                    popUpTo(route = Screen.Login.route) {
+//                        inclusive = true
+//                    }
+//                }
+//            }
             }, modifier = Modifier.fillMaxWidth()
         )
         Spacer(Modifier.size(4.dp))
-        LibraryButton(text = "Sign Up", onClick = onSignUpClicked, modifier = Modifier.fillMaxWidth())
+        LibraryButton(text = "Sign Up", onClick = {
+              navController.navigate(Screen.SignUp.route)
+        }, modifier = Modifier.fillMaxWidth())
     }
 }

@@ -13,13 +13,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.core.navigation.Screen
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier) {
+fun SignUpScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     val viewModel: SignUpViewModel = viewModel()
     val uiState = viewModel.uiState.collectAsState()
     val ctx = LocalContext.current
@@ -65,35 +70,42 @@ fun SignUpScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth())
         LibraryButton(
             onClick = {
-                      if (!viewModel.isReadyToSignUp()) {
-                          if (!viewModel.isEverythingFilled()) {
-                              if (uiState.value.name.isBlank()) viewModel.updateNameError(true) else viewModel.updateNameError(false)
-                              if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
-                              if (uiState.value.cPassword.isBlank()) viewModel.updateCPasswordError(true) else viewModel.updateCPasswordError(false)
-                              if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
-                          }
-                          if (viewModel.passwordsDoNotMatch()){
-                              viewModel.updatePasswordError(true)
-                              viewModel.updateCPasswordError(true)
-                              Toast.makeText(ctx, "Password and password confirmation does not match", Toast.LENGTH_SHORT).show()
-                          } else {
-                              viewModel.updatePasswordError(false)
-                              viewModel.updateCPasswordError(false)
-                          }
-                          if (!viewModel.isEmailValid()) {
-                              viewModel.updateEmailError(true)
-                              Toast.makeText(ctx, "email is not valid", Toast.LENGTH_SHORT).show()
-                          }
-                          if (!viewModel.isPasswordValid()) {
-                              viewModel.updatePasswordError(true)
-                              Toast.makeText(ctx, "Invalid password", Toast.LENGTH_SHORT).show()
-                          } else {
-                              viewModel.updatePasswordError(false)
-                          }
-                      } else {
-                          viewModel.signUp()
-                          Toast.makeText(ctx, "Success", Toast.LENGTH_SHORT).show()
-                      }
+                Toast.makeText(ctx, "Successfully signed up, please log in", Toast.LENGTH_SHORT).show()
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Login.route) {
+                        inclusive = true
+                    }
+                }
+//                      if (!viewModel.isReadyToSignUp()) {
+//                          if (!viewModel.isEverythingFilled()) {
+//                              if (uiState.value.name.isBlank()) viewModel.updateNameError(true) else viewModel.updateNameError(false)
+//                              if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
+//                              if (uiState.value.cPassword.isBlank()) viewModel.updateCPasswordError(true) else viewModel.updateCPasswordError(false)
+//                              if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
+//                          }
+//                          if (viewModel.passwordsDoNotMatch()){
+//                              viewModel.updatePasswordError(true)
+//                              viewModel.updateCPasswordError(true)
+//                              Toast.makeText(ctx, "Password and password confirmation does not match", Toast.LENGTH_SHORT).show()
+//                          } else {
+//                              viewModel.updatePasswordError(false)
+//                              viewModel.updateCPasswordError(false)
+//                          }
+//                          if (!viewModel.isEmailValid()) {
+//                              viewModel.updateEmailError(true)
+//                              Toast.makeText(ctx, "email is not valid", Toast.LENGTH_SHORT).show()
+//                          }
+//                          if (!viewModel.isPasswordValid()) {
+//                              viewModel.updatePasswordError(true)
+//                              Toast.makeText(ctx, "Invalid password", Toast.LENGTH_SHORT).show()
+//                          } else {
+//                              viewModel.updatePasswordError(false)
+//                          }
+//                      } else {
+//                          viewModel.signUp()
+//                          Toast.makeText(ctx, "Successfully signed up, please log in", Toast.LENGTH_SHORT).show()
+//                          onSuccessfullSignUp()
+//                      }
             }, text = "Sign Up", modifier = Modifier.fillMaxWidth())
     }
 }
