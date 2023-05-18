@@ -1,8 +1,11 @@
 package com.example.esemkalibrary.feature_home.data
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
 import com.example.esemkalibrary.core.data.LocalStorage
@@ -21,30 +24,27 @@ class ApiService(
 ) {
 
 
-    fun getBooks(token: String): Flow<List<BookHeader>> = flow{
+    private suspend fun getImage(token: String, id: String): ImageBitmap? {
         if (token.isEmpty()) {
-            emit(emptyList())
-            return@flow
+            return null
         }
-        val conn = URL("$BASE_URL:$PORT/Api/Book").openConnection() as HttpURLConnection
-        conn.requestMethod = "GET"
-        conn.setRequestProperty("Authorization", "Bearer $token")
-        conn.setRequestProperty("Content-Type", "application/json")
-        conn.setRequestProperty("Accept", "application/json")
+        var bitmap: ImageBitmap?
+        try {
+            withContext(Dispatchers.IO) {
+                val conn = URL("$BASE_URL:$PORT/Api/Book/$id/photo").openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.setRequestProperty("Authorization", "Bearer $token")
+                conn.setRequestProperty("Content-Type", "application/json")
+                conn.setRequestProperty("Accept", "application/json")
 
-        val inputString = conn.inputStream.bufferedReader().readText()
-        val jsonArray = JSONArray(inputString)
-        val books = mutableListOf<BookHeader>()
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            books.add(BookHeader(
-                id = jsonObject.getString("id"),
-                name = jsonObject.getString("name"),
-                authors = jsonObject.getString("authors"),
-            ))
+                val inputStream = conn.inputStream
+                bitmap = BitmapFactory.decodeStream(inputStream).asImageBitmap()
+            }
+        } catch (e: java.lang.Exception) {
+            bitmap = null
         }
-        emit(books)
-    }.flowOn(Dispatchers.IO)
+        return bitmap
+    }
 
     fun searchBooks(token: String, query: String?): Flow<List<BookHeader>> = flow {
         if (token.isEmpty()) {
@@ -66,6 +66,7 @@ class ApiService(
                 id = jsonObject.getString("id"),
                 name = jsonObject.getString("name"),
                 authors = jsonObject.getString("authors"),
+                image = getImage(token = token, id = jsonObject.getString("id"))
             ))
         }
         emit(books)

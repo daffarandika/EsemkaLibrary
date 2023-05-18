@@ -14,13 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.navigation.Screen
 import com.example.esemkalibrary.core.utils.viewModelFactory
-import com.example.esemkalibrary.feature_main.ui.BookCard
 
 @ExperimentalFoundationApi
 @Composable
@@ -53,7 +51,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
                 }
                 items(uiState.books) { book ->
                     BookCard(book = book, onClick = {
-                        navController.navigate(Screen.BookDetail.route)
+                        navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
                     })
                 }
             },

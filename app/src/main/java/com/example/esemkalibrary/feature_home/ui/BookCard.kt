@@ -1,4 +1,4 @@
-package com.example.esemkalibrary.feature_main.ui
+package com.example.esemkalibrary.feature_home.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -18,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
-import com.example.esemkalibrary.core.model.Book
 import com.example.esemkalibrary.core.model.BookHeader
 
 @Composable
@@ -29,8 +29,7 @@ fun BookCard(
 ) {
     Column(
         modifier = modifier
-            .padding(8.dp)
-            .height(300.dp)
+            .height(250.dp)
             .background(
                 color = Color.White,
                 shape = RoundedCornerShape(5)
@@ -38,16 +37,21 @@ fun BookCard(
             .clickable {
                 onClick(book.id)
             },
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Image(painterResource(id = R.drawable.default_img),
+        Image(
+            painter = if (book.image == null) painterResource(id = R.drawable.no_image) else BitmapPainter(image = book.image),
             "Image of Book",
             modifier = Modifier
+                .size(height = 200.dp, width = 200.dp)
                 .clip(
                 RoundedCornerShape(5))
         )
-        Text(text = book.name, textAlign = TextAlign.Center, fontSize = 18.sp, overflow = TextOverflow.Ellipsis, maxLines = 2)
-        Text(text = book.authors, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis, maxLines = 1)
+        Column(Modifier.fillMaxWidth()){
+            Text(text = book.name, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis, maxLines = 1, modifier = Modifier.fillMaxWidth())
+            Text(text = book.authors, textAlign = TextAlign.Center, fontSize = 12.sp, overflow = TextOverflow.Ellipsis, maxLines = 1, modifier = Modifier.fillMaxWidth())
+        }
     }
 }
 

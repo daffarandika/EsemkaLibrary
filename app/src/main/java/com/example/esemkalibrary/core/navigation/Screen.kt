@@ -13,7 +13,11 @@ sealed class Screen(val route: String) {
     object SignUp: Screen("sign_up")
     object Main: Screen("main")
     object Home: Screen("home")
-    object BookDetail: Screen("book_detail")
+    object BookDetail: Screen("book_detail") {
+        fun passBookId(bookId: String): String {
+            return "book_detail/$bookId"
+        }
+    }
     object Cart: Screen("cart")
     object Profile: Screen("profile")
     object BorrowingDetail: Screen("borrowing_detail")

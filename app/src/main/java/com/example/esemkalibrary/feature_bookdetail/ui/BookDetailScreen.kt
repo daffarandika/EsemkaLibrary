@@ -20,7 +20,7 @@ import com.example.esemkalibrary.core.components.theme.MudBrown
 import com.example.esemkalibrary.core.components.theme.SandBrown
 
 @Composable
-fun BookDetailScreen(modifier: Modifier = Modifier, id: String) {
+fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
     Scaffold(
         modifier = modifier,
         backgroundColor = SandBrown,
@@ -52,7 +52,7 @@ fun BookDetailScreen(modifier: Modifier = Modifier, id: String) {
                 "Book Image",
                 modifier = Modifier.size(256.dp))
             Text(
-                text = "Title Here",
+                text = bookId,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
             )
