@@ -78,11 +78,11 @@ fun LoginScreen(
                 if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
                     Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
                         .show()
-                }
-//                onSuccessfulLogin()
-                navController.navigate(route = Screen.Main.route) {
-                    popUpTo(route = Screen.Login.route) {
-                        inclusive = true
+                } else {
+                    navController.navigate(route = Screen.Main.route) {
+                        popUpTo(route = Screen.Login.route) {
+                            inclusive = true
+                        }
                     }
                 }
             }

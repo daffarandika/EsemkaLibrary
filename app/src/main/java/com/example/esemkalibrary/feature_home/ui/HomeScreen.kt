@@ -1,5 +1,6 @@
 package com.example.esemkalibrary.feature_home.ui
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -36,27 +37,28 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
         HomeViewModel(LocalContext.current)
     })
     val token =  viewModel.token.collectAsState(initial = "").value
-    val books = viewModel.getBooks(token).collectAsState(initial = listOf()).value
-        Column(modifier) {
-            LazyVerticalGrid(
-                cells = GridCells.Fixed(2),
-                content = {
-                    item(span = {
-                        GridItemSpan(this.maxCurrentLineSpan)
-                    }) {
-                        Column(modifier.padding(8.dp)) {
-                            LibraryTextField(value = "", onValueChange = {}, labelText = "List Books", modifier = Modifier.fillMaxWidth(), hint = {Text("Search")})
-                        }
+    val books = viewModel.getBooks(token).collectAsState(initial = listOf())
+    Column(modifier) {
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2),
+            content = {
+                item(span = {
+                    GridItemSpan(this.maxCurrentLineSpan)
+                }) {
+                    Column(modifier.padding(8.dp)) {
+                        LibraryTextField(value = "", onValueChange = {}, labelText = "List Books", modifier = Modifier.fillMaxWidth(), hint = {Text("Search")})
                     }
-                    items(books) { book ->
-                        BookCard(book = book, onClick = {
-                            navController.navigate(Screen.BookDetail.route)
-                        })
-                    }
-                },
-                contentPadding = PaddingValues(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            )
-        }
+                }
+                items(books.value) { book ->
+                Log.e("TAG", "HomeScreen: ${books.value}", )
+                    BookCard(book = book, onClick = {
+                        navController.navigate(Screen.BookDetail.route)
+                    })
+                }
+            },
+            contentPadding = PaddingValues(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        )
+    }
 }

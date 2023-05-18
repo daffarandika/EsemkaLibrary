@@ -56,22 +56,19 @@ class LoginViewModel(context: Context): ViewModel() {
     fun getAndSaveToken() {
         val apiService = ApiService()
         viewModelScope.launch {
-
-            try {
-                apiService.getToken(uiState.value.email, uiState.value.password).collect {
-                    dataStore.setToken(it)
+            apiService.getToken(uiState.value.email, uiState.value.password).catch { err ->
+                _uiState.update {uiState ->
+                    uiState.copy(loginErrorMessage = err.message)
                 }
-                _uiState.update {
-                    it.copy(loginErrorMessage = null)
-                }
-            } catch (e: java.lang.Exception) {
-                _uiState.update {
-                    it.copy(loginErrorMessage = e.message.toString())
-                }
+            }.collect {
+                dataStore.setToken(it)
             }
-
+            _uiState.update {
+                it.copy(loginErrorMessage = null)
+            }
         }
     }
+
 
     val token = dataStore.token
 }
