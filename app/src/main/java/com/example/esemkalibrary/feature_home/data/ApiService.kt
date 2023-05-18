@@ -20,6 +20,7 @@ class ApiService(
     val context: Context,
 ) {
 
+
     fun getBooks(token: String): Flow<List<BookHeader>> = flow{
         if (token.isEmpty()) {
             emit(emptyList())
@@ -43,5 +44,31 @@ class ApiService(
             ))
         }
         emit(books)
+    }.flowOn(Dispatchers.IO)
+
+    fun searchBooks(token: String, query: String?): Flow<List<BookHeader>> = flow {
+        if (token.isEmpty()) {
+            emit(emptyList())
+            return@flow
+        }
+        val conn = URL(if (query.isNullOrEmpty()) "$BASE_URL:$PORT/Api/Book" else "$BASE_URL:$PORT/Api/Book?searchText=$query").openConnection() as HttpURLConnection
+        conn.requestMethod = "GET"
+        conn.setRequestProperty("Authorization", "Bearer $token")
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.setRequestProperty("Accept", "application/json")
+
+        val inputString = conn.inputStream.bufferedReader().readText()
+        val jsonArray = JSONArray(inputString)
+        val books = mutableListOf<BookHeader>()
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            books.add(BookHeader(
+                id = jsonObject.getString("id"),
+                name = jsonObject.getString("name"),
+                authors = jsonObject.getString("authors"),
+            ))
+        }
+        emit(books)
+        Log.e("TAG", "searchBooks: $books", )
     }.flowOn(Dispatchers.IO)
 }

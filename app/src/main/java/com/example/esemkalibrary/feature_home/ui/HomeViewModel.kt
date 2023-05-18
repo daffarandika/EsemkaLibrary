@@ -1,27 +1,36 @@
 package com.example.esemkalibrary.feature_home.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
-import com.example.esemkalibrary.core.data.LocalStorage.Companion.dataStore
 import com.example.esemkalibrary.core.model.BookHeader
 import com.example.esemkalibrary.feature_home.data.ApiService
+import com.example.esemkalibrary.feature_home.data.HomeUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import org.json.JSONArray
-import kotlin.math.log
 
 
 class HomeViewModel(context: Context): ViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private val apiService = ApiService(context)
 
     val token = LocalStorage(context).token
 
-    fun getBooks(token: String): Flow<List<BookHeader>> {
-        return apiService.getBooks(token).flowOn(Dispatchers.Main)
+    fun searchBooks(token: String, query: String): Flow<List<BookHeader>> {
+        return apiService.searchBooks(token, query).flowOn(Dispatchers.Main)
+    }
+
+    fun updateBooks(books: List<BookHeader>) {
+        _uiState.value = uiState.value.copy(
+            books = books
+        )
+    }
+
+    fun updateSearchText(query: String) {
+        _uiState.update {
+            it.copy(searchText = query)
+        }
     }
 
 }
