@@ -7,10 +7,12 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.GridItemSpan
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -30,11 +32,15 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
     val token =  viewModel.token.collectAsState(initial = "").value
     viewModel.updateBooks(viewModel.searchBooks(token = token, query = uiState.searchText).collectAsState(initial = emptyList()).value)
     Column(modifier) {
+        if (uiState.books.isEmpty()) {
+                CircularProgressIndicator(Modifier.fillMaxSize())
+        }
         LazyVerticalGrid(
             cells = GridCells.Fixed(2),
             content = {
                 item(span = {
                     GridItemSpan(this.maxCurrentLineSpan)
+
                 }) {
                     Column(modifier.padding(8.dp)) {
                         LibraryTextField(
