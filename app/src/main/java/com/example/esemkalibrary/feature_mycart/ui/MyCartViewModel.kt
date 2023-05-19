@@ -10,6 +10,7 @@ import com.example.esemkalibrary.core.model.Book
 import com.example.esemkalibrary.feature_mycart.data.ApiService
 import com.example.esemkalibrary.feature_mycart.data.MyCartUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,6 +72,12 @@ class MyCartViewModel(val context: Context): ViewModel() {
     fun makeEndDateDialogInvisible() {
         _uiState.update {
             it.copy(showEndDateDialog = false)
+        }
+    }
+    fun uploadCart(bookIds: List<String>, token: String, start: LocalDate, end: LocalDate) {
+        viewModelScope.launch {
+            ApiService().postCartToApi(bookIds, token, start, end)
+            LocalStorage(context).clearCartItems()
         }
     }
 }

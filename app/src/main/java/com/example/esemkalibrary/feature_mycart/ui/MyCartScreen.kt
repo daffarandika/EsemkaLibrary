@@ -123,7 +123,12 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
                         viewModel.makeEndDateDialogVisible()
                     }, date = uiState.value.endDate)
                 }
-                LibraryButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
+                LibraryButton(onClick = { viewModel.uploadCart(
+                    bookIds = uiState.value.cartItems.map{it.id},
+                    token = token.value,
+                    start = uiState.value.startDate,
+                    end = uiState.value.endDate,
+                ) }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
             }
         }
     }
