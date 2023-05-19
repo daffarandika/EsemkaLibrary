@@ -1,19 +1,15 @@
 package com.example.esemkalibrary.feature_mycart.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.model.Book
 import com.example.esemkalibrary.feature_mycart.data.ApiService
 import com.example.esemkalibrary.feature_mycart.data.MyCartUiState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 class MyCartViewModel(val context: Context): ViewModel() {
@@ -40,18 +36,10 @@ class MyCartViewModel(val context: Context): ViewModel() {
         }
     }
 
-    fun updateStartDate(date: LocalDate) {
+    fun updateStartDate(startDate: LocalDate) {
         _uiState.update {
-            it.copy(startDate = date)
+            it.copy(startDate = startDate, endDate = startDate.plusDays(3))
         }
-            Log.e("TAG", "updateStartDate: ${uiState.value.startDate}", )
-    }
-
-    fun updateEndDate(date: LocalDate) {
-        _uiState.update {
-            it.copy(endDate = date)
-        }
-            Log.e("TAG", "updateEndDate: ${uiState.value.endDate}", )
     }
 
     fun makeStartDateDialogVisible() {
@@ -59,21 +47,12 @@ class MyCartViewModel(val context: Context): ViewModel() {
             it.copy(showStartDateDialog = true)
         }
     }
-    fun makeEndDateDialogVisible() {
-        _uiState.update {
-            it.copy(showEndDateDialog = true)
-        }
-    }
     fun makeStartDateDialogInvisible() {
         _uiState.update {
             it.copy(showStartDateDialog = false)
         }
     }
-    fun makeEndDateDialogInvisible() {
-        _uiState.update {
-            it.copy(showEndDateDialog = false)
-        }
-    }
+
     fun uploadCart(bookIds: List<String>, token: String, start: LocalDate, end: LocalDate) {
         viewModelScope.launch {
             ApiService().postCartToApi(bookIds, token, start, end)

@@ -58,7 +58,6 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
     val books = viewModel.getBooksFromIds(bookIds.value.split(";"), token.value).collectAsState(initial = emptyList())
     viewModel.updateCartItems(books.value)
     val showStartDateDialog = uiState.value.showStartDateDialog
-    val showEndDateDialog = uiState.value.showEndDateDialog
 
     if (showStartDateDialog) {
         DatePickerDialog(
@@ -68,15 +67,6 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
             },
             onDismissRequest = {
                 viewModel.makeStartDateDialogInvisible()
-            })
-    }
-    if (showEndDateDialog) {
-        DatePickerDialog(
-            onDateSelected = {
-                viewModel.updateEndDate(it)
-            },
-            onDismissRequest = {
-                viewModel.makeEndDateDialogInvisible()
             })
     }
 
@@ -120,7 +110,7 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
                     }, date = uiState.value.startDate)
                     Text("-")
                     DateLabel(modifier = Modifier.width(165.dp), onClick = {
-                        viewModel.makeEndDateDialogVisible()
+
                     }, date = uiState.value.endDate)
                 }
                 LibraryButton(onClick = { viewModel.uploadCart(
