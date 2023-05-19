@@ -41,6 +41,10 @@ class ApiService {
         }
         val books = mutableListOf<Book>()
         bookIds.forEach { bookId ->
+            if (bookId.isBlank()) {
+                emit(emptyList())
+                return@flow
+            }
             val conn = URL("$BASE_URL:$PORT/api/book/${bookId}").openConnection() as HttpURLConnection
             conn.setRequestProperty("Authorization", "Bearer $token")
             conn.setRequestProperty("Content-Type", "application/json")

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.model.Book
 import com.example.esemkalibrary.feature_mycart.data.ApiService
@@ -30,6 +31,12 @@ class MyCartViewModel(val context: Context): ViewModel() {
 
     fun getBooksFromIds(bookIds: List<String>, token: String): Flow<List<Book>> {
         return ApiService().getBooksFromId(token, bookIds).flowOn(Dispatchers.Main)
+    }
+
+    fun removeItemFromCart(bookId: String){
+        viewModelScope.launch {
+            LocalStorage(context).removeItemFromCart(bookId)
+        }
     }
 
     fun updateStartDate(date: LocalDate) {

@@ -33,10 +33,29 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
         MyCartViewModel(LocalContext.current)
     })
 
+    var showRemoveDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var currentBookId by remember {
+        mutableStateOf("")
+    }
+
+    if (showRemoveDialog) {
+        RemoveDialog(
+            onNoClicked = { showRemoveDialog = false },
+            onYesClicked = {
+                showRemoveDialog = false
+                viewModel.removeItemFromCart(currentBookId)
+            },
+            id = currentBookId
+        )
+    }
+
     val bookIds = viewModel.bookIdsInCart.collectAsState("")
     val token = viewModel.token.collectAsState(initial = "")
     val uiState = viewModel.uiState.collectAsState()
-    val books = viewModel.getBooksFromIds(bookIds.value.split(";"), token.value).collectAsState(initial = emptyList<Book>())
+    val books = viewModel.getBooksFromIds(bookIds.value.split(";"), token.value).collectAsState(initial = emptyList())
     viewModel.updateCartItems(books.value)
     val showStartDateDialog = uiState.value.showStartDateDialog
     val showEndDateDialog = uiState.value.showEndDateDialog
@@ -69,7 +88,10 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
             items(
                 uiState.value.cartItems
             ) { book ->
-                CartCard(book = book)
+                CartCard(book = book, onRemoveClick = {
+                    currentBookId = book.id
+                    showRemoveDialog = true
+                })
             }
         }
         Column(

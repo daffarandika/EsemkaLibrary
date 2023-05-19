@@ -17,7 +17,7 @@ import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.model.Book
 
 @Composable
-fun CartCard(modifier: Modifier = Modifier, book: Book) {
+fun CartCard(modifier: Modifier = Modifier, book: Book, onRemoveClick: () -> Unit = {}) {
     Row(
         modifier
             .fillMaxWidth()
@@ -27,7 +27,7 @@ fun CartCard(modifier: Modifier = Modifier, book: Book) {
         Image(
             painter = if (book.image == null) painterResource(id = R.drawable.no_image) else BitmapPainter(book.image),
             contentDescription = "Book Image",
-            modifier = Modifier.sizeIn(maxHeight = 100.dp, maxWidth = 100.dp).padding(8.dp)
+            modifier = Modifier.size(100.dp).padding(8.dp)
         )
         Column(modifier.fillMaxWidth().height(128.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Text(
@@ -54,7 +54,7 @@ fun CartCard(modifier: Modifier = Modifier, book: Book) {
                     }
                 }
                 Column(Modifier) {
-                    LibraryButton(onClick = { /*TODO*/ }, text = "Remove")
+                    LibraryButton(onClick = {onRemoveClick()}, text = "Remove")
                 }
             }
         }
