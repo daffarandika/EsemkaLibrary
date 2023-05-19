@@ -56,6 +56,7 @@ class ApiService(context: Context) {
             name = jsonObject.getString("name"),
             authors = jsonObject.getString("authors"),
             isbn = jsonObject.getString("isbn"),
+            publisher = jsonObject.getString("publisher"),
             available = jsonObject.getInt("available"),
             description = jsonObject.getString("description"),
             image = getImage(token, bookId)

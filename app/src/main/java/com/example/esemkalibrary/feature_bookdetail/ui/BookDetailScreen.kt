@@ -40,6 +40,7 @@ fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
         backgroundColor = SandBrown,
         floatingActionButton = {
             FloatingActionButton(onClick = {
+               viewModel.addToCart(uiState.value.id)
             },
                 backgroundColor = DirtBrown,
                 shape = RoundedCornerShape(5),

@@ -15,13 +15,34 @@ class LocalStorage(private val context: Context) {
         .map {
             it[TOKEN_KEY] ?: ""
         }
+    val bookIdInCart: Flow<String> = context.dataStore.data
+        .map {
+            it[CART_ITEMS_KEY] ?: ""
+        }
     suspend fun setToken(token: String) {
         context.dataStore.edit {
             it[TOKEN_KEY] = token
         }
     }
+    suspend fun addItemToCart(bookId: String) {
+        context.dataStore.edit {
+            if (it[CART_ITEMS_KEY] == "") {
+                it[CART_ITEMS_KEY] = bookId
+            } else {
+                if (!it[CART_ITEMS_KEY]?.split(";")?.contains(bookId)!!) {
+                    it[CART_ITEMS_KEY] = "${it[CART_ITEMS_KEY]};$bookId"
+                }
+            }
+        }
+    }
+    suspend fun clearCartItems(){
+        context.dataStore.edit {
+            it[CART_ITEMS_KEY] = ""
+        }
+    }
     companion object {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("LocalStorage")
         val TOKEN_KEY = stringPreferencesKey("token")
+        val CART_ITEMS_KEY = stringPreferencesKey("cart_items")
     }
 }

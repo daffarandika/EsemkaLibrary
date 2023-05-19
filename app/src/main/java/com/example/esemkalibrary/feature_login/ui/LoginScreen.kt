@@ -17,6 +17,7 @@ import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryPasswordTextField
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
+import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.navigation.Screen
 
 @Composable
@@ -30,8 +31,10 @@ fun LoginScreen(
     var emailLabel by remember {
         mutableStateOf("")
     }
+
+    val cart  = LocalStorage(LocalContext.current).bookIdInCart.collectAsState(initial = "")
+    emailLabel = cart.value
     val ctx = LocalContext.current
-    emailLabel = viewModel.token.collectAsState(initial = "").value
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
@@ -54,7 +57,7 @@ fun LoginScreen(
                 viewModel.updateEmailInput(it)
             },
             isError = uiState.value.isEmailError,
-            labelText = "Email")
+            labelText = emailLabel)
         Spacer(Modifier.size(4.dp))
         LibraryPasswordTextField(value = uiState.value.password,
             onValueChange = {

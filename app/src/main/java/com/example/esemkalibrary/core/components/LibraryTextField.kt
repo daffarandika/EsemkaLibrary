@@ -47,6 +47,7 @@ fun LibraryTextField(
                 }
             },
             placeholder = hint,
+            singleLine = true,
         )
     }
 }
