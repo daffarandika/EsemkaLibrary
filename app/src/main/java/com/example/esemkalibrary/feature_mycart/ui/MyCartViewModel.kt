@@ -1,16 +1,20 @@
 package com.example.esemkalibrary.feature_mycart.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.model.Book
+import com.example.esemkalibrary.feature_mycart.data.ApiService
 import com.example.esemkalibrary.feature_mycart.data.MyCartUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
-class MyCartViewModel: ViewModel() {
+class MyCartViewModel(val context: Context): ViewModel() {
 
     private val _uiState = MutableStateFlow(MyCartUiState())
     val uiState: StateFlow<MyCartUiState> = _uiState.asStateFlow()
@@ -19,6 +23,13 @@ class MyCartViewModel: ViewModel() {
         _uiState.update {
             it.copy(cartItems = cartItems)
         }
+    }
+
+    val bookIdsInCart = LocalStorage(context).bookIdInCart
+    val token = LocalStorage(context).token
+
+    fun getBooksFromIds(bookIds: List<String>, token: String): Flow<List<Book>> {
+        return ApiService().getBooksFromId(token, bookIds).flowOn(Dispatchers.Main)
     }
 
     fun updateStartDate(date: LocalDate) {

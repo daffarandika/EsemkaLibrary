@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,11 +30,14 @@ import java.time.format.DateTimeFormatter
 fun MyCartScreen(modifier: Modifier = Modifier) {
 
     val viewModel: MyCartViewModel = viewModel(factory = viewModelFactory {
-        MyCartViewModel()
+        MyCartViewModel(LocalContext.current)
     })
 
+    val bookIds = viewModel.bookIdsInCart.collectAsState("")
+    val token = viewModel.token.collectAsState(initial = "")
     val uiState = viewModel.uiState.collectAsState()
-
+    val books = viewModel.getBooksFromIds(bookIds.value.split(";"), token.value).collectAsState(initial = emptyList<Book>())
+    viewModel.updateCartItems(books.value)
     val showStartDateDialog = uiState.value.showStartDateDialog
     val showEndDateDialog = uiState.value.showEndDateDialog
 
@@ -57,119 +61,13 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
             })
     }
 
-    Column {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxHeight()
+    ) {
         LazyColumn(modifier = modifier.weight(1f, fill = false)) {
             items(
-                listOf(
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                    Book(
-                        id = "12",
-                        name = "database design",
-                        authors = "uncle bob",
-                        isbn = "21441-421",
-                        publisher = "7 Seas",
-                        available = 12,
-                        description = "A book"
-                    ),
-                )
+                uiState.value.cartItems
             ) { book ->
                 CartCard(book = book)
             }
@@ -186,7 +84,7 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text("Date Borrow:",modifier = Modifier.align(Alignment.Start))
                 Row(modifier = Modifier

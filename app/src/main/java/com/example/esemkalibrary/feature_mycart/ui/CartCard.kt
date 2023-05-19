@@ -6,6 +6,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,12 +21,13 @@ fun CartCard(modifier: Modifier = Modifier, book: Book) {
     Row(
         modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            painterResource(id = R.drawable.default_img),
+            painter = if (book.image == null) painterResource(id = R.drawable.no_image) else BitmapPainter(book.image),
             contentDescription = "Book Image",
-            modifier = Modifier.size(128.dp)
+            modifier = Modifier.sizeIn(maxHeight = 100.dp, maxWidth = 100.dp).padding(8.dp)
         )
         Column(modifier.fillMaxWidth().height(128.dp), verticalArrangement = Arrangement.SpaceBetween) {
             Text(

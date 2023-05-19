@@ -1,5 +1,7 @@
 package com.example.esemkalibrary.core.model
 
+import androidx.compose.ui.graphics.ImageBitmap
+
 data class Book(
     val id: String,
     val name: String,
@@ -7,5 +9,6 @@ data class Book(
     val isbn: String,
     val publisher: String,
     val available: Int,
-    val description: String
+    val description: String,
+    val image: ImageBitmap? = null,
 )
