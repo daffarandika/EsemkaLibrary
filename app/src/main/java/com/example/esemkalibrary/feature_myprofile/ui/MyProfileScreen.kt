@@ -1,16 +1,22 @@
 package com.example.esemkalibrary.feature_myprofile.ui
 
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -25,6 +31,7 @@ import com.example.esemkalibrary.core.utils.viewModelFactory
 import com.example.esemkalibrary.feature_myprofile.data.BorrowDetail
 import com.example.esemkalibrary.feature_myprofile.data.User
 
+@Suppress("DEPRECATION")
 @Composable
 fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostController) {
     val viewModel: MyProfileViewModel = viewModel(factory = viewModelFactory {
@@ -34,6 +41,16 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
     val token = viewModel.token.collectAsState(initial = "")
     val user = viewModel.getUserDetail(token.value).collectAsState(initial = User())
     val borrowingHistory = viewModel.getCartHistory(token.value).collectAsState(initial = emptyList())
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = {
+            imageUri = it
+        }
+    )
+    val ctx = LocalContext.current
     viewModel.updateName(user.value.name)
     viewModel.updateEmail(user.value.email)
     viewModel.updateProfilePhoto(user.value.profilePhoto)
@@ -56,7 +73,17 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                         .size(256.dp)
                         .clip(shape = CircleShape)
                 )
-                LibraryButton(onClick = { /*TODO*/ }, text = "Upload Photo")
+                LibraryButton(onClick = {
+                    launcher.launch("image/*")
+                    imageUri?.let {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            viewModel.updateProfilePhoto(ImageDecoder.decodeBitmap(ImageDecoder.createSource(
+                                ctx.contentResolver, it)).asImageBitmap())
+                        } else {
+                            viewModel.updateProfilePhoto(MediaStore.Images.Media.getBitmap(ctx.contentResolver, it).asImageBitmap())
+                        }
+                    }
+                }, text = "Upload Photo")
                 Text(
                     text = uiState.value.name,
                     fontSize = 18.sp,

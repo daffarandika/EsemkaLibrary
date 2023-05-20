@@ -18,9 +18,11 @@ import androidx.compose.ui.unit.dp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.theme.Grey
+import com.example.esemkalibrary.feature_forum.data.Reply
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun ReplyCard(modifier: Modifier = Modifier) {
+fun ReplyCard(modifier: Modifier = Modifier, reply: Reply) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(5))
@@ -42,10 +44,10 @@ fun ReplyCard(modifier: Modifier = Modifier) {
             )
             Column(modifier = Modifier, Arrangement.SpaceAround){
                 Text(
-                    text  = "Author - 10 Sept 2023",
+                    text  = "${reply.createdBy.name} - ${reply.createdAt.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
                 )
                 Text(
-                    text = "Hai Sayang"
+                    text = reply.message
                 )
             }
         }

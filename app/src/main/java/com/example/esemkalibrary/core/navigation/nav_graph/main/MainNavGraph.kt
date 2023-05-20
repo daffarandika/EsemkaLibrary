@@ -14,6 +14,7 @@ import com.example.esemkalibrary.core.navigation.nav_graph.main.profile.profileN
 import com.example.esemkalibrary.feature_forum.ui.ForumScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
+import com.example.esemkalibrary.feature_myprofile.ui.ImagePicker
 import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
 
 

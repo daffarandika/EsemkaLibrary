@@ -18,10 +18,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.Grey
+import com.example.esemkalibrary.feature_forum.data.MainPost
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun PostCard(
     modifier: Modifier = Modifier,
+    post: MainPost
 ) {
     Row(
         modifier = modifier
@@ -43,14 +46,14 @@ fun PostCard(
         )
         Column(modifier = Modifier, Arrangement.SpaceAround){
             Text(
-                text  = "Title",
+                text  = post.subject,
                 fontSize = 18.sp
             )
             Text(
-                text  = "Author - 10 Sept 2023",
+                text  = "${post.createdBy.name} - ${post.createdAt.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
             )
             Text(
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tempus, risus id feugiat suscipit, urna odio luctus dui, a porttitor dui odio non magna. Maecenas hendrerit tellus eget mi suscipit, eu lobortis quam suscipit. Curabitur sit amet justo ut ex condimentum mattis sed eget risus. Fusce sit amet viverra purus, ut porttitor lacus. Morbi mauris nibh, mollis id est ut, lacinia facilisis sapien. Nam eleifend orci purus, eu eleifend sem ultrices sit amet. Sed risus neque, fermentum in nisi vel, condimentum volutpat massa. Nam ut tristique urna. Praesent hendrerit aliquam ante, a dictum enim aliquam eu. Nulla id dolor ut orci porttitor varius sed et augue. Nam finibus sed erat vel fringilla. Nulla quis libero feugiat, pretium nunc pulvinar, gravida tortor. Nam sed ullamcorper est, ut elementum est. Mauris ut tincidunt justo, quis lacinia quam. Integer non fermentum augue."
+                text = post.body
             )
         }
     }
