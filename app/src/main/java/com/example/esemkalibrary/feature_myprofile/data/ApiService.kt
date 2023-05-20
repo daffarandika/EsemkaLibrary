@@ -1,12 +1,16 @@
 package com.example.esemkalibrary.feature_myprofile.data
 
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.processNextEventInCurrentThread
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -17,6 +21,25 @@ import java.time.LocalDateTime
 
 
 class ApiService {
+
+    suspend fun getImage(token: String): ImageBitmap? {
+        if (token.isBlank()) {
+            return null
+        }
+        var bitmap: ImageBitmap?
+        try {
+            withContext(Dispatchers.IO) {
+                val conn = URL("$BASE_URL:$PORT/api/user/me/photo").openConnection() as HttpURLConnection
+                conn.setRequestProperty("Authorization", "Bearer $token")
+                conn.setRequestProperty("Content-Type", "application/json")
+                val inputStream = conn.inputStream
+                bitmap = BitmapFactory.decodeStream(inputStream).asImageBitmap()
+            }
+        } catch (e: java.lang.Exception) {
+            bitmap = null
+        }
+        return bitmap
+    }
 
     fun getUserDetail(token: String): Flow<User> = flow {
         if (token.isBlank()) {
@@ -33,6 +56,7 @@ class ApiService {
         val user = User(
             name = jsonObject.getString("name"),
             email = jsonObject.getString("email"),
+            profilePhoto = getImage(token),
         )
         emit(user)
         Log.e("TAG", "getUserDetail: ${conn.responseCode}", )

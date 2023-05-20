@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -35,6 +36,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
     val borrowingHistory = viewModel.getCartHistory(token.value).collectAsState(initial = emptyList())
     viewModel.updateName(user.value.name)
     viewModel.updateEmail(user.value.email)
+    viewModel.updateProfilePhoto(user.value.profilePhoto)
     viewModel.updateCartHistory(borrowingHistory.value)
     LazyColumn(
         modifier.padding(8.dp),
@@ -48,7 +50,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painterResource(id = R.drawable.photoprofiledefault),
+                    painter = if (uiState.value.profilePhoto == null) painterResource(id = R.drawable.photoprofiledefault) else BitmapPainter(uiState.value.profilePhoto!!),
                     contentDescription =  "Profile photo",
                     modifier = modifier
                         .size(256.dp)

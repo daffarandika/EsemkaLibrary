@@ -42,7 +42,7 @@ class MyProfileViewModel(context: Context): ViewModel() {
             it.copy(borrowingHistory = cartItems)
         }
     }
-    fun updateProfilePhoto(profilePhoto: ImageBitmap) {
+    fun updateProfilePhoto(profilePhoto: ImageBitmap?) {
         _uiState.update {
             it.copy(profilePhoto = profilePhoto)
         }
