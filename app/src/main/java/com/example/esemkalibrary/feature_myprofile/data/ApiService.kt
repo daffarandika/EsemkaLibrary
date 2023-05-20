@@ -1,25 +1,48 @@
 package com.example.esemkalibrary.feature_myprofile.data
 
+import android.util.Log
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 
 class ApiService {
 
-    suspend fun getCartHistory(token: String): Flow<List<CartItem>> = flow {
+    fun getUserDetail(token: String): Flow<User> = flow {
+        if (token.isBlank()) {
+            emit(User())
+            return@flow
+        }
+        val conn = URL("$BASE_URL:$PORT/api/user/me").openConnection() as HttpURLConnection
+        conn.setRequestProperty("Authorization", "Bearer $token")
+        conn.setRequestProperty("Accept", "application/json")
+        conn.setRequestProperty("Content-type", "application/json")
+
+        val inputString = conn.inputStream.bufferedReader().readText()
+        val jsonObject = JSONObject(inputString)
+        val user = User(
+            name = jsonObject.getString("name"),
+            email = jsonObject.getString("email"),
+        )
+        emit(user)
+        Log.e("TAG", "getUserDetail: ${conn.responseCode}", )
+    }.flowOn(Dispatchers.IO)
+
+    fun getCartHistory(token: String): Flow<List<CartItem>> = flow {
         if (token.isBlank()) {
             emit(emptyList())
             return@flow
         }
-        withContext(Dispatchers.IO) {
             val conn = URL("$BASE_URL:$PORT/api/borrowing").openConnection() as HttpURLConnection
             conn.setRequestProperty("Authorization", "Bearer $token")
             conn.setRequestProperty("Content-type", "application/json")
@@ -32,16 +55,15 @@ class ApiService {
                 cartItems.add(
                     CartItem(
                         id = jsonObject.getString("id"),
-                        start = LocalDateTime.parse(jsonObject.getString("start")),
-                        end = LocalDateTime.parse(jsonObject.getString("end")),
-                        returnedAt = LocalDateTime.parse(jsonObject.getString("returnedAt")),
+                        start = LocalDate.parse(jsonObject.getString("start").substring(startIndex = 0, endIndex = 10)),
+                        end = LocalDate.parse(jsonObject.getString("end").substring(startIndex = 0, endIndex = 10)),
+                        returnedAt = LocalDate.parse(jsonObject.getString("returnedAt").substring(startIndex = 0, endIndex = 10)),
                         bookCount = jsonObject.getInt("bookCount"),
                         status = jsonObject.getString("status"),
                     )
                 )
             }
             emit(cartItems)
-        }
-    }
+    }.flowOn(Dispatchers.IO)
 
 }

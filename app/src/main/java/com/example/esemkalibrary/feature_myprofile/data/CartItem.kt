@@ -1,12 +1,12 @@
 package com.example.esemkalibrary.feature_myprofile.data
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 data class CartItem(
     val id: String,
-    val start: LocalDateTime = LocalDateTime.now(),
-    val end: LocalDateTime = LocalDateTime.now(),
-    val returnedAt: LocalDateTime = LocalDateTime.now(),
+    val start: LocalDate = LocalDate.now(),
+    val end: LocalDate = LocalDate.now(),
+    val returnedAt: LocalDate = LocalDate.now(),
     val bookCount: Int = 0,
     val status: String = "Borrowing"
 )

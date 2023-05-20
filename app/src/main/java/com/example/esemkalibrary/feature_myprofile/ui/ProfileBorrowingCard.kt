@@ -9,12 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.esemkalibrary.feature_myprofile.data.BorrowDetail
+import com.example.esemkalibrary.feature_myprofile.data.CartItem
 
 @Composable
 fun ProfileBorrowingCard(
     modifier: Modifier = Modifier,
-    borrowDetail: BorrowDetail,
+    cartItem: CartItem,
     onClick: () -> Unit
 ) {
     Row(
@@ -27,9 +27,9 @@ fun ProfileBorrowingCard(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(modifier) {
-            Text("${borrowDetail.startDate} - ${borrowDetail.endDate}")
-            Text("${borrowDetail.qty} Book${if (borrowDetail.qty != 1) "s" else ""}")
+            Text("${cartItem.start} - ${cartItem.end}")
+            Text("${cartItem.bookCount} Book${if (cartItem.bookCount != 1) "s" else ""}")
         }
-        Text(borrowDetail.status)
+        Text(cartItem.status)
     }
 }

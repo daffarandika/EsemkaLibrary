@@ -57,7 +57,7 @@ fun LoginScreen(
                 viewModel.updateEmailInput(it)
             },
             isError = uiState.value.isEmailError,
-            labelText = emailLabel)
+            labelText = "Email")
         Spacer(Modifier.size(4.dp))
         LibraryPasswordTextField(value = uiState.value.password,
             onValueChange = {
