@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -31,8 +32,8 @@ fun BorrowingDetailScreen(
         BorrowingDetailViewModel(LocalContext.current)
     })
     val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
-    val token = viewModel.token.collectAsState(initial = "")
-    val uiState = viewModel.getUiState(token = token.value, borrowingId = borrowingId).collectAsState(
+    val token by viewModel.token.collectAsState(initial = "")
+    val uiState by viewModel.getUiState(token = token, borrowingId = borrowingId).collectAsState(
         initial = BorrowingDetailUiState())
     LazyColumn(modifier.padding(4.dp), verticalArrangement = Arrangement.spacedBy((8.dp))) {
         item {
@@ -41,11 +42,11 @@ fun BorrowingDetailScreen(
                 .padding(4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(text = "${uiState.value.start.format(formatter)} - ${uiState.value.end.format(formatter)}", style = MaterialTheme.typography.h6)
-                Text(text = uiState.value.status)
+                Text(text = "${uiState.start.format(formatter)} - ${uiState.end.format(formatter)}", style = MaterialTheme.typography.h6)
+                Text(text = uiState.status)
             }
         }
-        items(uiState.value.books) { book ->
+        items(uiState.books) { book ->
             BorrowingCard(book = book)
         }
     }

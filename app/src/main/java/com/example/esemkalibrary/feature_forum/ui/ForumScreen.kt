@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -25,8 +26,8 @@ fun ForumScreen(modifier: Modifier = Modifier, navController: NavHostController)
     val viewModel: ForumMainPageViewModel = viewModel(factory = viewModelFactory {
         ForumMainPageViewModel(LocalContext.current)
     })
-    val token = viewModel.token.collectAsState(initial = "")
-    val uiState = viewModel.getUiState(token.value).collectAsState(initial = ForumMainPageUiState())
+    val token by viewModel.token.collectAsState(initial = "")
+    val uiState by viewModel.getUiState(token).collectAsState(initial = ForumMainPageUiState())
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = { navController.navigate(route = Screen.AddThread.route) },
@@ -38,13 +39,13 @@ fun ForumScreen(modifier: Modifier = Modifier, navController: NavHostController)
         backgroundColor = SandBrown
     ) {
         LazyColumn(modifier = modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            items(uiState.value.posts) {
+            items(uiState.posts) {
                 ForumCard(
                     forumItem = it,
                     modifier = modifier.fillMaxWidth(),
                     onRemoveClicked = {},
                     onBodyClicked = { navController.navigate(Screen.ThreadDetail.route) },
-                    canBeDeleted = (uiState.value.currentUserName.uppercase() == it.createdBy.name.uppercase())
+                    canBeDeleted = (uiState.currentUserName.uppercase() == it.createdBy.name.uppercase())
                 )
             }
         }

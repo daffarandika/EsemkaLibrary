@@ -1,12 +1,10 @@
 package com.example.esemkalibrary.feature_bookdetail.data
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
-import com.example.esemkalibrary.core.data.LocalStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +14,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ApiService(context: Context) {
+class ApiService {
 
     private suspend fun getImage(token: String, id: String): ImageBitmap? {
         if (token.isEmpty()) {

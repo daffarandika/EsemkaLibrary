@@ -29,9 +29,9 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7
     val viewModel: ThreadDetailViewModel = viewModel(factory = viewModelFactory {
         ThreadDetailViewModel(LocalContext.current)
     })
-    val token = viewModel.token.collectAsState(initial = "")
-    val mainPost = viewModel.getThreadDetail(token.value, threadId).collectAsState(initial = ThreadDetailUiState()).value.mainPost
-    val currentUsername = viewModel.getThreadDetail(token.value, threadId).collectAsState(initial = ThreadDetailUiState()).value.currentUsername
+    val token by viewModel.token.collectAsState(initial = "")
+    val mainPost = viewModel.getThreadDetail(token, threadId).collectAsState(initial = ThreadDetailUiState()).value.mainPost
+    val currentUsername = viewModel.getThreadDetail(token, threadId).collectAsState(initial = ThreadDetailUiState()).value.currentUsername
     val uiState by viewModel.uiState.collectAsState()
     viewModel.updateMainPost(mainPost)
     viewModel.updateCurrentUsername(currentUsername)
@@ -61,7 +61,7 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7
                  viewModel.updateReplyText(it)
             }, hint = { Text("Reply....") }, modifier = Modifier.fillMaxWidth(), showLabel = false)
             LibraryButton(onClick = {
-                viewModel.postReply(token.value, threadId, uiState.replyText)
+                viewModel.postReply(token, threadId, uiState.replyText)
                 viewModel.updateReplyText("")
             }, text = "Add Reply", modifier = Modifier.fillMaxWidth())
         }

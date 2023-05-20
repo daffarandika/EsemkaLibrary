@@ -16,6 +16,9 @@ class LocalStorage(private val context: Context) {
         .map {
             it[TOKEN_KEY] ?: ""
         }
+    suspend fun clearToken() {
+        setToken("")
+    }
     val bookIdInCart: Flow<String> = context.dataStore.data
         .map {
             it[CART_ITEMS_KEY] ?: ""

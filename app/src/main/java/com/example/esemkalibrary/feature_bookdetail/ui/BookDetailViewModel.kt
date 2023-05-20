@@ -7,11 +7,10 @@ import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.feature_bookdetail.data.ApiService
 import com.example.esemkalibrary.feature_bookdetail.data.BookDetailUiState
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class BookDetailViewModel(val context: Context): ViewModel() {
-    private val apiService = ApiService(context)
+    private val apiService = ApiService()
 
     fun getData(token: String, bookId: String): Flow<BookDetailUiState> = apiService.getData(token = token, bookId = bookId)
 

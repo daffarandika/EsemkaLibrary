@@ -52,12 +52,12 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
         )
     }
 
-    val bookIds = viewModel.bookIdsInCart.collectAsState("")
-    val token = viewModel.token.collectAsState(initial = "")
-    val uiState = viewModel.uiState.collectAsState()
-    val books = viewModel.getBooksFromIds(bookIds.value.split(";"), token.value).collectAsState(initial = emptyList())
-    viewModel.updateCartItems(books.value)
-    val showStartDateDialog = uiState.value.showStartDateDialog
+    val bookIds by viewModel.bookIdsInCart.collectAsState("")
+    val token by viewModel.token.collectAsState(initial = "")
+    val uiState by viewModel.uiState.collectAsState()
+    val books by viewModel.getBooksFromIds(bookIds.split(";"), token).collectAsState(initial = emptyList())
+    viewModel.updateCartItems(books)
+    val showStartDateDialog = uiState.showStartDateDialog
 
     if (showStartDateDialog) {
         DatePickerDialog(
@@ -76,7 +76,7 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
     ) {
         LazyColumn(modifier = modifier.weight(1f, fill = false)) {
             items(
-                uiState.value.cartItems
+                uiState.cartItems
             ) { book ->
                 CartCard(book = book, onRemoveClick = {
                     currentBookId = book.id
@@ -107,17 +107,17 @@ fun MyCartScreen(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically) {
                     DateLabel(modifier = Modifier.width(165.dp), onClick = {
                         viewModel.makeStartDateDialogVisible()
-                    }, date = uiState.value.startDate)
+                    }, date = uiState.startDate)
                     Text("-")
                     DateLabel(modifier = Modifier.width(165.dp), onClick = {
 
-                    }, date = uiState.value.endDate)
+                    }, date = uiState.endDate)
                 }
                 LibraryButton(onClick = { viewModel.uploadCart(
-                    bookIds = uiState.value.cartItems.map{it.id},
-                    token = token.value,
-                    start = uiState.value.startDate,
-                    end = uiState.value.endDate,
+                    bookIds = uiState.cartItems.map{it.id},
+                    token = token,
+                    start = uiState.startDate,
+                    end = uiState.endDate,
                 ) }, modifier = Modifier.fillMaxWidth(), text = "Booking Borrow")
             }
         }

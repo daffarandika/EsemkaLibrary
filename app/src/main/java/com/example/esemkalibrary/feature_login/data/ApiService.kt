@@ -1,5 +1,6 @@
 package com.example.esemkalibrary.feature_login.data
 
+import android.util.Log
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
 import kotlinx.coroutines.Dispatchers
@@ -32,14 +33,14 @@ class ApiService {
                     "   \"password\": \"$password\"\n" +
                     "}")
             outputStreamWriter.flush()
+            Log.e("TAG", "getToken: ${conn.responseCode}", )
             if (conn.responseCode != 200) {
-                throw Exception("Invalid email or password")
+                emit("error")
             }
             val input = conn.inputStream.bufferedReader().readText()
             val jsonObject = JSONObject(input)
             emit(jsonObject.getString("token"))
-        }
-            .flowOn(Dispatchers.IO)
+        }.flowOn(Dispatchers.IO)
     }
 
 }

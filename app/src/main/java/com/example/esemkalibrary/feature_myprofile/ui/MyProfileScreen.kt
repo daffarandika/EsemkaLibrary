@@ -37,10 +37,10 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
     val viewModel: MyProfileViewModel = viewModel(factory = viewModelFactory {
         MyProfileViewModel(LocalContext.current)
     })
-    val uiState = viewModel.uiState.collectAsState()
-    val token = viewModel.token.collectAsState(initial = "")
-    val user = viewModel.getUserDetail(token.value).collectAsState(initial = User())
-    val borrowingHistory = viewModel.getCartHistory(token.value).collectAsState(initial = emptyList())
+    val uiState by viewModel.uiState.collectAsState()
+    val token by viewModel.token.collectAsState(initial = "")
+    val user by viewModel.getUserDetail(token).collectAsState(initial = User())
+    val borrowingHistory by viewModel.getCartHistory(token).collectAsState(initial = emptyList())
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -51,10 +51,10 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
         }
     )
     val ctx = LocalContext.current
-    viewModel.updateName(user.value.name)
-    viewModel.updateEmail(user.value.email)
-    viewModel.updateProfilePhoto(user.value.profilePhoto)
-    viewModel.updateCartHistory(borrowingHistory.value)
+    viewModel.updateName(user.name)
+    viewModel.updateEmail(user.email)
+    viewModel.updateProfilePhoto(user.profilePhoto)
+    viewModel.updateCartHistory(borrowingHistory)
     LazyColumn(
         modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -67,7 +67,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    painter = if (uiState.value.profilePhoto == null) painterResource(id = R.drawable.photoprofiledefault) else BitmapPainter(uiState.value.profilePhoto!!),
+                    painter = if (uiState.profilePhoto == null) painterResource(id = R.drawable.photoprofiledefault) else BitmapPainter(uiState.profilePhoto!!),
                     contentDescription =  "Profile photo",
                     modifier = modifier
                         .size(256.dp)
@@ -85,11 +85,11 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                     }
                 }, text = "Upload Photo")
                 Text(
-                    text = uiState.value.name,
+                    text = uiState.name,
                     fontSize = 18.sp,
                 )
                 Text(
-                    text = uiState.value.email,
+                    text = uiState.email,
                     fontSize = 12.sp,
                 )
                 LibraryButton(onClick = { /*TODO*/ }, modifier = modifier.fillMaxWidth(), text = "Logout")
@@ -99,7 +99,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 )
             }
         }
-        items(uiState.value.borrowingHistory) { borrow ->
+        items(uiState.borrowingHistory) { borrow ->
             ProfileBorrowingCard(cartItem = borrow, onClick =  {
                 navController.navigate(route = Screen.BorrowingDetail.passBorrowingId(borrow.id))
             })

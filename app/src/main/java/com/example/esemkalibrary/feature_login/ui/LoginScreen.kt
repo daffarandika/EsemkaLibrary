@@ -1,5 +1,6 @@
 package com.example.esemkalibrary.feature_login.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,12 +29,6 @@ fun LoginScreen(
     val viewModel: LoginViewModel = viewModel(factory = com.example.esemkalibrary.core.utils.viewModelFactory {
         LoginViewModel(LocalContext.current)
     })
-    var emailLabel by remember {
-        mutableStateOf("")
-    }
-
-    val cart  = LocalStorage(LocalContext.current).bookIdInCart.collectAsState(initial = "")
-    emailLabel = cart.value
     val ctx = LocalContext.current
     Column(
         verticalArrangement = Arrangement.Center,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,7 +27,7 @@ fun SignUpScreen(
     navController: NavController
 ) {
     val viewModel: SignUpViewModel = viewModel()
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val ctx = LocalContext.current
     Column(modifier
         .background(color = SandBrown)
@@ -40,33 +41,33 @@ fun SignUpScreen(
             textAlign = TextAlign.Center,
             fontSize = 18.sp
         )
-        LibraryTextField(value = uiState.value.name,
+        LibraryTextField(value = uiState.name,
             onValueChange = {
                             viewModel.updateNameInput(it)
             },
             labelText = "Name",
-            isError = uiState.value.isNameError,
+            isError = uiState.isNameError,
             modifier = Modifier.fillMaxWidth())
         LibraryPasswordTextField(onShowPasswordChange = {
-                viewModel.updatePasswordVisibility(!uiState.value.isPasswordVisible)
+                viewModel.updatePasswordVisibility(!uiState.isPasswordVisible)
             },
-            value = uiState.value.password,
+            value = uiState.password,
             onValueChange = {viewModel.updatePasswordInput(it)},
-            showPassword = uiState.value.isPasswordVisible,
-            isError = uiState.value.isPasswordError,
+            showPassword = uiState.isPasswordVisible,
+            isError = uiState.isPasswordError,
             labelText = "Password",
             modifier = Modifier.fillMaxWidth())
-        LibraryPasswordTextField(onShowPasswordChange = { viewModel.updateCPasswordVisibility(!uiState.value.isCPasswordVisible) },
-            value = uiState.value.cPassword,
+        LibraryPasswordTextField(onShowPasswordChange = { viewModel.updateCPasswordVisibility(!uiState.isCPasswordVisible) },
+            value = uiState.cPassword,
             onValueChange = {viewModel.updateCPasswordInput(it)},
             labelText = "Confirm Password",
-            isError = uiState.value.isCPasswordError,
-            showPassword = uiState.value.isCPasswordVisible,
+            isError = uiState.isCPasswordError,
+            showPassword = uiState.isCPasswordVisible,
             modifier = Modifier.fillMaxWidth())
-        LibraryTextField(value = uiState.value.email,
+        LibraryTextField(value = uiState.email,
             onValueChange = {viewModel.updateEmailInput(it)},
             labelText = "Email",
-            isError = uiState.value.isEmailError,
+            isError = uiState.isEmailError,
             modifier = Modifier.fillMaxWidth())
         LibraryButton(
             onClick = {
@@ -78,10 +79,10 @@ fun SignUpScreen(
                 }
                       if (!viewModel.isReadyToSignUp()) {
                           if (!viewModel.isEverythingFilled()) {
-                              if (uiState.value.name.isBlank()) viewModel.updateNameError(true) else viewModel.updateNameError(false)
-                              if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
-                              if (uiState.value.cPassword.isBlank()) viewModel.updateCPasswordError(true) else viewModel.updateCPasswordError(false)
-                              if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
+                              if (uiState.name.isBlank()) viewModel.updateNameError(true) else viewModel.updateNameError(false)
+                              if (uiState.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
+                              if (uiState.cPassword.isBlank()) viewModel.updateCPasswordError(true) else viewModel.updateCPasswordError(false)
+                              if (uiState.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
                           }
                           if (viewModel.passwordsDoNotMatch()){
                               viewModel.updatePasswordError(true)

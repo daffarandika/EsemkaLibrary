@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -30,9 +31,9 @@ fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
     val viewModel: BookDetailViewModel = viewModel(factory = viewModelFactory {
         BookDetailViewModel(LocalContext.current)
     })
-    val token = viewModel.token.collectAsState(initial = "")
-    val uiState = viewModel.getData(token = token.value, bookId = bookId).collectAsState(initial = BookDetailUiState())
-    if (uiState.value.name.isBlank()) {
+    val token by viewModel.token.collectAsState(initial = "")
+    val uiState by viewModel.getData(token = token, bookId = bookId).collectAsState(initial = BookDetailUiState())
+    if (uiState.name.isBlank()) {
         CircularProgressIndicator(Modifier.fillMaxSize())
     }
     Scaffold(
@@ -40,7 +41,7 @@ fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
         backgroundColor = SandBrown,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-               viewModel.addToCart(uiState.value.id)
+               viewModel.addToCart(uiState.id)
             },
                 backgroundColor = DirtBrown,
                 shape = RoundedCornerShape(5),
@@ -63,28 +64,28 @@ fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
 
             ) {
-            Image(painter = if (uiState.value.image == null) painterResource(id = R.drawable.no_image) else BitmapPainter(uiState.value.image!!),
+            Image(painter = if (uiState.image == null) painterResource(id = R.drawable.no_image) else BitmapPainter(uiState.image!!),
                 "Book Image",
                 modifier = Modifier.size(256.dp))
             Text(
-                text = uiState.value.name,
+                text = uiState.name,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
             )
-            Text(uiState.value.authors)
+            Text(uiState.authors)
             Row(modifier.align(Alignment.Start)) {
                 Text("ISBN-10: ", fontWeight = FontWeight.Bold)
-                Text(uiState.value.isbn)
+                Text(uiState.isbn)
             }
             Row(modifier.align(Alignment.Start)) {
                 Text("Publisher: ", fontWeight = FontWeight.Bold)
-                Text(uiState.value.publisher)
+                Text(uiState.publisher)
             }
             Row(modifier.align(Alignment.Start)) {
                 Text("Available: ", fontWeight = FontWeight.Bold)
-                Text(uiState.value.available.toString())
+                Text(uiState.available.toString())
             }
-            Text(uiState.value.description)
+            Text(uiState.description)
             Spacer(modifier.size(64.dp))
         }
     }
