@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.theme.Grey
@@ -22,7 +23,7 @@ import com.example.esemkalibrary.feature_forum.data.Reply
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun ReplyCard(modifier: Modifier = Modifier, reply: Reply) {
+fun ReplyCard(modifier: Modifier = Modifier, reply: Reply, canBeDeleted: Boolean = false, onDeleteClicked: () -> Unit = {}) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(5))
@@ -42,15 +43,21 @@ fun ReplyCard(modifier: Modifier = Modifier, reply: Reply) {
                     .border(BorderStroke(width = 1.dp, color = Grey.copy(0.5f)), shape = CircleShape)
                     .size(64.dp)
             )
-            Column(modifier = Modifier, Arrangement.SpaceAround){
+            Column(modifier = Modifier.widthIn(max = 200.dp), Arrangement.SpaceAround){
                 Text(
                     text  = "${reply.createdBy.name} - ${reply.createdAt.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                    fontSize = 14.sp
                 )
                 Text(
-                    text = reply.message
+                    text = reply.message,
+                    fontSize = 12.sp
                 )
             }
         }
-        LibraryButton(onClick = { /*TODO*/ }, text = "Remove")
+        if (canBeDeleted) {
+            LibraryButton(onClick = {
+                onDeleteClicked()
+            }, text = "Remove")
+        }
     }
 }

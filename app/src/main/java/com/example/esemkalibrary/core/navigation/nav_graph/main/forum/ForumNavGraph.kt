@@ -17,7 +17,7 @@ fun NavGraphBuilder.forumNavGraph(navController: NavHostController) {
             ForumScreen(navController = navController)
         }
         composable(Screen.AddThread.route) {
-            AddThreadScreen()
+            AddThreadScreen(navController = navController)
         }
         composable(Screen.ThreadDetail.route) {
             ThreadDetailScreen()

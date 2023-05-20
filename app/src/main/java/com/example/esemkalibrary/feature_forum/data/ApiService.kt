@@ -8,8 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
@@ -54,9 +56,9 @@ class ApiService {
         emit(ForumMainPageUiState(posts, username))
     }.flowOn(Dispatchers.IO)
 
-    fun getThreadDetail(token: String, threadId: String): Flow<ForumDetailUiState> = flow {
+    fun getThreadDetail(token: String, threadId: String): Flow<ThreadDetailUiState> = flow {
         if (token.isBlank()) {
-            emit(ForumDetailUiState())
+            emit(ThreadDetailUiState())
             return@flow
         }
         val conn = URL("$BASE_URL:$PORT/api/forum/$threadId").openConnection() as HttpURLConnection
@@ -80,7 +82,14 @@ class ApiService {
                 )
             ))
         }
-        emit(ForumDetailUiState(
+        val conn2 = URL("$BASE_URL:$PORT/api/user/me").openConnection() as HttpURLConnection
+        conn2.setRequestProperty("Authorization", "Bearer $token")
+        conn2.setRequestProperty("Content-type", "application/json")
+
+        val inputString2 = conn2.inputStream.bufferedReader().readText()
+        val jsonObject2 = JSONObject(inputString2)
+        val username = jsonObject2.getString("name")
+        emit(ThreadDetailUiState(
             MainPost(
                 subject = jsonObject.getString("subject"),
                 body = jsonObject.getString("body"),
@@ -90,7 +99,42 @@ class ApiService {
                     email = jsonObject.getJSONObject("createdBy").getString("email"),
                 ),
                 replies = replies,
-            )
+            ),
+            username
         ))
     }.flowOn(Dispatchers.IO)
+
+    suspend fun addThread(token: String, subject: String, body: String) {
+        if (token.isBlank()) return
+        withContext(Dispatchers.IO) {
+            val conn = URL("$BASE_URL:$PORT/api/forum").openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.setRequestProperty("Accept", "application/json")
+            conn.setRequestProperty("Content-type", "application/json")
+
+            val requestBody = JSONObject().apply {
+                put("subject", subject)
+                put("body", body)
+            }.toString()
+            val osw = OutputStreamWriter(conn.outputStream)
+            osw.write(requestBody)
+            osw.flush()
+            val inputString = conn.inputStream.bufferedReader().readText()
+            Log.e("TAG", "addThread: $inputString", )
+        }
+    }
+    suspend fun addReply(token: String, threadId: String, message: String) {
+        if (token.isBlank()) return
+        withContext(Dispatchers.IO) {
+            val conn = URL("$BASE_URL:$PORT/api/forum/$threadId?message=$message").openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.setRequestProperty("Content-type", "application/json")
+            conn.setRequestProperty("Accept", "appliation/json")
+
+            val inputString = conn.inputStream.bufferedReader().readText()
+            Log.e("TAG", "addReply: $inputString", )
+        }
+    }
 }

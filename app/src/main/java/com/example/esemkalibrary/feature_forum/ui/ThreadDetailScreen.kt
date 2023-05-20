@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
@@ -21,7 +22,7 @@ import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.Grey
 import com.example.esemkalibrary.core.utils.viewModelFactory
-import com.example.esemkalibrary.feature_forum.data.ForumDetailUiState
+import com.example.esemkalibrary.feature_forum.data.ThreadDetailUiState
 
 @Composable
 fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7c8-7b68-4142-a61a-298e2db5bb9d") {
@@ -29,7 +30,11 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7
         ThreadDetailViewModel(LocalContext.current)
     })
     val token = viewModel.token.collectAsState(initial = "")
-    val uiState = viewModel.getThreadDetail(token.value, threadId).collectAsState(initial = ForumDetailUiState())
+    val mainPost = viewModel.getThreadDetail(token.value, threadId).collectAsState(initial = ThreadDetailUiState()).value.mainPost
+    val currentUsername = viewModel.getThreadDetail(token.value, threadId).collectAsState(initial = ThreadDetailUiState()).value.currentUsername
+    val uiState by viewModel.uiState.collectAsState()
+    viewModel.updateMainPost(mainPost)
+    viewModel.updateCurrentUsername(currentUsername)
     Column(verticalArrangement = Arrangement.SpaceBetween) {
         LazyColumn(modifier
             .weight(weight = 1f, fill = false)
@@ -38,10 +43,10 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7
             ,
             verticalArrangement = Arrangement.spacedBy(4.dp)) {
             item {
-                PostCard(post = uiState.value.mainPost)
+                PostCard(post = uiState.mainPost)
             }
-            items(uiState.value.mainPost.replies) {reply ->
-                ReplyCard(reply = reply)
+            items(uiState.mainPost.replies) {reply ->
+                ReplyCard(reply = reply, canBeDeleted = (uiState.currentUsername.equals(reply.createdBy.name, true)), onDeleteClicked = {})
             }
 
         }
@@ -52,8 +57,13 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7
                 .background(color = White)
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            LibraryTextField(value = "", onValueChange = {}, hint = { Text("Reply....") }, modifier = Modifier.fillMaxWidth(), showLabel = false)
-            LibraryButton(onClick = { /*TODO*/ }, text = "Add Reply", modifier = Modifier.fillMaxWidth())
+            LibraryTextField(value = uiState.replyText, onValueChange = {
+                 viewModel.updateReplyText(it)
+            }, hint = { Text("Reply....") }, modifier = Modifier.fillMaxWidth(), showLabel = false)
+            LibraryButton(onClick = {
+                viewModel.postReply(token.value, threadId, uiState.replyText)
+                viewModel.updateReplyText("")
+            }, text = "Add Reply", modifier = Modifier.fillMaxWidth())
         }
     }
 }
