@@ -72,7 +72,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
         }
         items(uiState.value.borrowingHistory) { borrow ->
             ProfileBorrowingCard(cartItem = borrow, onClick =  {
-                navController.navigate(Screen.BorrowingDetail.route)
+                navController.navigate(route = Screen.BorrowingDetail.passBorrowingId(borrow.id))
             })
         }
     }

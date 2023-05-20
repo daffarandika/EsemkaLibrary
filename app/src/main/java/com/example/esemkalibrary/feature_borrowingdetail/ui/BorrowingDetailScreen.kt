@@ -6,16 +6,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.model.Book
+import com.example.esemkalibrary.core.utils.viewModelFactory
+import com.example.esemkalibrary.feature_borrowingdetail.data.BorrowingDetailUiState
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun BorrowingDetailScreen(modifier: Modifier = Modifier) {
+fun BorrowingDetailScreen(
+    modifier: Modifier = Modifier,
+    borrowingId: String,
+) {
+    val viewModel: BorrowingDetailViewModel = viewModel(factory = viewModelFactory {
+        BorrowingDetailViewModel(LocalContext.current)
+    })
+    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    val token = viewModel.token.collectAsState(initial = "")
+    val uiState = viewModel.getUiState(token = token.value, borrowingId = borrowingId).collectAsState(
+        initial = BorrowingDetailUiState())
     LazyColumn(modifier.padding(4.dp), verticalArrangement = Arrangement.spacedBy((8.dp))) {
         item {
             Column(modifier
@@ -23,58 +41,11 @@ fun BorrowingDetailScreen(modifier: Modifier = Modifier) {
                 .padding(4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(text = "13 Sept 2023 - 21 Sept 2023", fontSize = 18.sp)
-                Text(text = "Borrowing")
+                Text(text = "${uiState.value.start.format(formatter)} - ${uiState.value.end.format(formatter)}", style = MaterialTheme.typography.h6)
+                Text(text = uiState.value.status)
             }
         }
-        items(
-            listOf(
-                Book(
-                    id = "12",
-                    name = "database design",
-                    authors = "uncle bob",
-                    isbn = "21441-421",
-                    publisher = "7 Seas",
-                    available = 12,
-                    description = "A book"
-                ),
-                Book(
-                    id = "12",
-                    name = "database design",
-                    authors = "uncle bob",
-                    isbn = "21441-421",
-                    publisher = "7 Seas",
-                    available = 12,
-                    description = "A book"
-                ),
-                Book(
-                    id = "12",
-                    name = "database design",
-                    authors = "uncle bob",
-                    isbn = "21441-421",
-                    publisher = "7 Seas",
-                    available = 12,
-                    description = "A book"
-                ),
-                Book(
-                    id = "12",
-                    name = "database design",
-                    authors = "uncle bob",
-                    isbn = "21441-421",
-                    publisher = "7 Seas",
-                    available = 12,
-                    description = "A book"
-                ),
-                Book(
-                    id = "12",
-                    name = "database design",
-                    authors = "uncle bob",
-                    isbn = "21441-421",
-                    publisher = "7 Seas",
-                    available = 12,
-                    description = "A book"
-                ),
-        )) { book ->
+        items(uiState.value.books) { book ->
             BorrowingCard(book = book)
         }
     }

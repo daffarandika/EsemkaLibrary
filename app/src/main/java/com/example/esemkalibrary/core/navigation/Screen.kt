@@ -20,7 +20,11 @@ sealed class Screen(val route: String) {
     }
     object Cart: Screen("cart")
     object Profile: Screen("profile")
-    object BorrowingDetail: Screen("borrowing_detail")
+    object BorrowingDetail: Screen("borrowing_detail") {
+        fun passBorrowingId(borrowingId: String): String {
+            return "borrowing_detail/$borrowingId"
+        }
+    }
     object Forum: Screen("forum")
     object AddThread: Screen("add_thread")
     object ThreadDetail: Screen("thread_detail")
