@@ -22,18 +22,14 @@ fun MainBottomBar(
     Row(modifier
         .fillMaxWidth()
         .background(SandBrown)) {
-        items.forEachIndexed { index, item ->
+        items.forEach { item ->
             BottomTabIndicator(
                 text = item.text,
                 modifier = Modifier.weight((100/items.size).toFloat()),
                 onClick = {
-                    navController.navigate(item.screen.route) {
-                        navController.graph.startDestinationRoute?.let {
-                            popUpTo(it) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+                    navController.navigate(item.screen.route){
+                        popUpTo(route = navController.graph.route!!) {
+                            inclusive = true
                         }
                     }
                 }

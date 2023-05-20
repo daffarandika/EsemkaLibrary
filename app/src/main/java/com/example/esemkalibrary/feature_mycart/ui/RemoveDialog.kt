@@ -21,7 +21,7 @@ fun RemoveDialog(modifier: Modifier = Modifier, onNoClicked:() -> Unit, onYesCli
     Dialog(onDismissRequest = {onNoClicked()}, properties = DialogProperties()) {
         Column(modifier.wrapContentSize().background(color = MudBrown, shape = RoundedCornerShape(5))) {
             Text(
-                text = "Are you sure you want to delete this book $id?",
+                text = "Are you sure you want to remove this book from your cart?",
                 style = MaterialTheme.typography.h6,
                 color = Color.White,
                 modifier = Modifier.padding(16.dp),
