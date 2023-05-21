@@ -1,7 +1,6 @@
 package com.example.esemkalibrary.feature_login.ui
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
@@ -12,10 +11,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class LoginViewModel(context: Context): ViewModel() {
-
-    init {
-        viewModelScope.launch{ LocalStorage(context).clearToken() }
-    }
 
     private val dataStore = LocalStorage(context)
 
@@ -65,14 +60,8 @@ class LoginViewModel(context: Context): ViewModel() {
                 _uiState.update {uiState ->
                     uiState.copy(loginErrorMessage = err.message)
                 }
-            }.collect { token ->
-                Log.e("TAG", "getAndSaveToken: $token", )
-                if(token == "error") {
-                    _uiState.update { state ->
-                        state.copy(loginErrorMessage = "Invalid username or password")
-                    }
-                }
-                dataStore.setToken(token)
+            }.collect {
+                dataStore.setToken(it)
             }
             _uiState.update {
                 it.copy(loginErrorMessage = null)

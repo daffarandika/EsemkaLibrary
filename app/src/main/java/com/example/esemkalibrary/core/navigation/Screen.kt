@@ -27,5 +27,9 @@ sealed class Screen(val route: String) {
     }
     object Forum: Screen("forum")
     object AddThread: Screen("add_thread")
-    object ThreadDetail: Screen("thread_detail")
+    object ThreadDetail: Screen("thread_detail") {
+        fun passId(threadId: String): String {
+            return "thread_detail/$threadId"
+        }
+    }
 }

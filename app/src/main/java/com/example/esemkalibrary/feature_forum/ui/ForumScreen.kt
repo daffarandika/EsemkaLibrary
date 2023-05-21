@@ -44,7 +44,7 @@ fun ForumScreen(modifier: Modifier = Modifier, navController: NavHostController)
                     forumItem = it,
                     modifier = modifier.fillMaxWidth(),
                     onRemoveClicked = {},
-                    onBodyClicked = { navController.navigate(Screen.ThreadDetail.route) },
+                    onBodyClicked = { navController.navigate(Screen.ThreadDetail.passId(it.id)) },
                     canBeDeleted = (uiState.currentUserName.uppercase() == it.createdBy.name.uppercase())
                 )
             }

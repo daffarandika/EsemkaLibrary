@@ -25,7 +25,7 @@ import com.example.esemkalibrary.core.utils.viewModelFactory
 import com.example.esemkalibrary.feature_forum.data.ThreadDetailUiState
 
 @Composable
-fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String = "ec16f7c8-7b68-4142-a61a-298e2db5bb9d") {
+fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String) {
     val viewModel: ThreadDetailViewModel = viewModel(factory = viewModelFactory {
         ThreadDetailViewModel(LocalContext.current)
     })
