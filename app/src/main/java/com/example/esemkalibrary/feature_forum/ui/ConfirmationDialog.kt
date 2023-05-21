@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,8 +25,8 @@ fun ConfirmationDialog(onYesClicked:() -> Unit, onNoClicked: () -> Unit, text: S
             .wrapContentSize()
             .background(color = DirtBrown, shape = RoundedCornerShape(5))) {
             Text(
-                text = "Are you sure you want to delete this reply ?",
-                fontSize = 18.sp,
+                text = text,
+                style = MaterialTheme.typography.h6,
                 color = Color.White,
                 modifier = Modifier.padding(8.dp)
             )

@@ -92,7 +92,15 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                     text = uiState.email,
                     fontSize = 12.sp,
                 )
-                LibraryButton(onClick = { /*TODO*/ }, modifier = modifier.fillMaxWidth(), text = "Logout")
+                LibraryButton(
+                    onClick = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(navController.graph.route!!){inclusive = true}
+                        }
+                    },
+                    modifier = modifier.fillMaxWidth(),
+                    text = "Logout"
+                )
                 Text(
                     modifier = Modifier.align(Alignment.Start),
                     text = "My Borrowing History: "

@@ -13,6 +13,7 @@ import com.example.esemkalibrary.core.navigation.nav_graph.main.home.homeNavGrap
 import com.example.esemkalibrary.core.navigation.nav_graph.main.profile.profileNavGraph
 import com.example.esemkalibrary.feature_forum.ui.ForumScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
+import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
 
@@ -36,6 +37,9 @@ fun MainNavGraph(navController: NavHostController) {
         }
         composable(route = Screen.Profile.route) {
             MyProfileScreen(navController = navController)
+        }
+        composable(route = Screen.Login.route) {
+            LoginScreen(navController = navController)
         }
         homeNavGraph(navController = navController)
         cartNavGraph(navController = navController)
