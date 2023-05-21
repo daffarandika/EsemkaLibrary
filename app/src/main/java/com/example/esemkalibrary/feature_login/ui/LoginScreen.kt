@@ -1,5 +1,6 @@
 package com.example.esemkalibrary.feature_login.ui
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.navigation.Screen
+import java.security.spec.ECField
 
 @Composable
 fun LoginScreen(
@@ -28,12 +30,7 @@ fun LoginScreen(
     val viewModel: LoginViewModel = viewModel(factory = com.example.esemkalibrary.core.utils.viewModelFactory {
         LoginViewModel(LocalContext.current)
     })
-    var emailLabel by remember {
-        mutableStateOf("")
-    }
 
-    val cart  = LocalStorage(LocalContext.current).bookIdInCart.collectAsState(initial = "")
-    emailLabel = cart.value
     val ctx = LocalContext.current
     Column(
         verticalArrangement = Arrangement.Center,
@@ -77,10 +74,12 @@ fun LoginScreen(
                 if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
                 if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
             } else {
+
+                Log.e("TAG", "LoginScreen: ${uiState.value}", )
                 viewModel.getAndSaveToken()
-                if (!uiState.value.loginErrorMessage.isNullOrEmpty()) {
-                    Toast.makeText(ctx, "${uiState.value.loginErrorMessage}", Toast.LENGTH_SHORT)
-                        .show()
+
+                if (!uiState.value.isAllowedToLogin) {
+                    Toast.makeText(ctx, "Incorrect email or password", Toast.LENGTH_SHORT).show()
                 } else {
                     navController.navigate(route = Screen.Main.route) {
                         popUpTo(route = Screen.Login.route) {

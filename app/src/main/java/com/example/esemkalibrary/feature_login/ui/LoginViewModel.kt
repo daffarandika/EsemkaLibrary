@@ -1,6 +1,7 @@
 package com.example.esemkalibrary.feature_login.ui
 
 import android.content.Context
+import androidx.compose.animation.slideOutHorizontally
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
@@ -45,7 +46,7 @@ class LoginViewModel(context: Context): ViewModel() {
         }
     }
 
-    fun updateLoginErrorMessage(errorMessage: String?) {
+    fun updateLoginErrorMessage(errorMessage: String) {
         _uiState.update{
             it.copy(loginErrorMessage = errorMessage)
         }
@@ -56,16 +57,19 @@ class LoginViewModel(context: Context): ViewModel() {
     fun getAndSaveToken() {
         val apiService = ApiService()
         viewModelScope.launch {
-            apiService.getToken(uiState.value.email, uiState.value.password).catch { err ->
-                _uiState.update {uiState ->
-                    uiState.copy(loginErrorMessage = err.message)
+            try {
+                apiService.getToken(uiState.value.email, uiState.value.password).collect {
+                    dataStore.setToken(it)
                 }
-            }.collect {
-                dataStore.setToken(it)
+                _uiState.update {
+                    it.copy(loginErrorMessage = "mt", isAllowedToLogin = true)
+                }
+            } catch (e: java.lang.Exception) {
+                _uiState.update {
+                    it.copy(loginErrorMessage = e.message.toString(), isAllowedToLogin = false)
+                }
             }
-            _uiState.update {
-                it.copy(loginErrorMessage = null)
-            }
+
         }
     }
 

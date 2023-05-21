@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
@@ -24,7 +23,7 @@ class ApiService {
         conn.setRequestProperty("Accept", "application/json")
     }
 
-    suspend fun getToken(email: String, password: String): Flow<String> {
+    fun getToken(email: String, password: String): Flow<String> {
         return flow {
             val outputStreamWriter = OutputStreamWriter(conn.outputStream)
             outputStreamWriter.write("{\n" +
