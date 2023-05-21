@@ -148,4 +148,15 @@ class ApiService {
             Log.e("tag", "deleteReply: ${conn.responseCode} ${conn.url}", )
         }
     }
+    suspend fun deletePost(token: String, forumId: String) {
+        if (token.isBlank()) return
+        withContext(Dispatchers.IO) {
+            val conn = URL("$BASE_URL:$PORT/api/forum/$forumId").openConnection() as HttpURLConnection
+            conn.requestMethod = "DELETE"
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.setRequestProperty("Content-type", "application/json")
+
+            Log.e("TAG", "deletePost: ${conn.responseCode}", )
+        }
+    }
 }

@@ -3,16 +3,14 @@ package com.example.esemkalibrary.feature_forum.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,12 +40,16 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String) {
             },
             onNoClicked = {
                 viewModel.updateDialogVisibility(false)
-            }
+            },
+            text = "Are you sure you want to delete this reply"
         )
     }
     viewModel.updateMainPost(mainPost)
     viewModel.updateCurrentUsername(currentUsername)
-    Column(verticalArrangement = Arrangement.SpaceBetween) {
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier.fillMaxSize()
+    ) {
         LazyColumn(modifier
             .weight(weight = 1f, fill = false)
             .padding(top = 8.dp)

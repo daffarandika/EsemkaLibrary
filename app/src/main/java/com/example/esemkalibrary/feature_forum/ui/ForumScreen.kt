@@ -7,9 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -28,6 +26,24 @@ fun ForumScreen(modifier: Modifier = Modifier, navController: NavHostController)
     })
     val token by viewModel.token.collectAsState(initial = "")
     val uiState by viewModel.getUiState(token).collectAsState(initial = ForumMainPageUiState())
+    var showDialog by remember{
+        mutableStateOf(false)
+    }
+    var currentThreadId by remember {
+        mutableStateOf("")
+    }
+    if (showDialog) {
+        ConfirmationDialog(
+            onYesClicked = {
+                viewModel.deletePost(token, currentThreadId)
+                showDialog = false
+            },
+            onNoClicked = {
+                showDialog = false
+            },
+            text = "Are you sure you want to delete this post ?"
+        )
+    }
     Scaffold(floatingActionButton = {
         FloatingActionButton(
             onClick = { navController.navigate(route = Screen.AddThread.route) },
@@ -43,7 +59,10 @@ fun ForumScreen(modifier: Modifier = Modifier, navController: NavHostController)
                 ForumCard(
                     forumItem = it,
                     modifier = modifier.fillMaxWidth(),
-                    onRemoveClicked = {},
+                    onRemoveClicked = {
+                        currentThreadId = it.id
+                        showDialog = true
+                    },
                     onBodyClicked = { navController.navigate(Screen.ThreadDetail.passId(it.id)) },
                     canBeDeleted = (uiState.currentUserName.uppercase() == it.createdBy.name.uppercase())
                 )
