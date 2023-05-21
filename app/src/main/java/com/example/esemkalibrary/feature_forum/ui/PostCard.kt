@@ -51,9 +51,11 @@ fun PostCard(
             )
             Text(
                 text  = "${post.createdBy.name} - ${post.createdAt.format(DateTimeFormatter.ofPattern("dd MMM yyyy"))}",
+                fontSize = 14.sp,
             )
             Text(
-                text = post.body
+                text = post.body,
+                fontSize = 12.sp,
             )
         }
     }

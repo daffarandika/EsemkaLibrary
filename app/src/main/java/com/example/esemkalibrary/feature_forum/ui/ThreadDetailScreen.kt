@@ -10,9 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
@@ -33,6 +31,20 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String) {
     val mainPost = viewModel.getThreadDetail(token, threadId).collectAsState(initial = ThreadDetailUiState()).value.mainPost
     val currentUsername = viewModel.getThreadDetail(token, threadId).collectAsState(initial = ThreadDetailUiState()).value.currentUsername
     val uiState by viewModel.uiState.collectAsState()
+    var replyId by remember {
+        mutableStateOf("")
+    }
+    if (uiState.showConfirmationDialog) {
+        ConfirmationDialog(
+            onYesClicked = {
+                viewModel.deleteReply(token, threadId, replyId)
+                viewModel.updateDialogVisibility(false)
+            },
+            onNoClicked = {
+                viewModel.updateDialogVisibility(false)
+            }
+        )
+    }
     viewModel.updateMainPost(mainPost)
     viewModel.updateCurrentUsername(currentUsername)
     Column(verticalArrangement = Arrangement.SpaceBetween) {
@@ -46,7 +58,14 @@ fun ThreadDetailScreen(modifier: Modifier = Modifier, threadId: String) {
                 PostCard(post = uiState.mainPost)
             }
             items(uiState.mainPost.replies) {reply ->
-                ReplyCard(reply = reply, canBeDeleted = (uiState.currentUsername.equals(reply.createdBy.name, true)), onDeleteClicked = {})
+                ReplyCard(
+                    reply = reply,
+                    canBeDeleted = (uiState.currentUsername.equals(reply.createdBy.name, true)),
+                    onDeleteClicked = {
+                        replyId = reply.id
+                        viewModel.updateDialogVisibility(true)
+                    }
+                )
             }
 
         }

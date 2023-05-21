@@ -45,4 +45,22 @@ class ThreadDetailViewModel(val context: Context): ViewModel() {
             ApiService().addReply(token, threadId, message)
         }
     }
+
+    fun deleteReply(token: String, forumId: String, replyId: String) {
+        viewModelScope.launch {
+            ApiService().deleteReply(token, forumId, replyId)
+        }
+    }
+
+    fun updateCurrentReplyId(replyId: String) {
+        _uiState.update {
+            it.copy(currentUsername = replyId)
+        }
+    }
+
+    fun updateDialogVisibility(show: Boolean) {
+        _uiState.update {
+            it.copy(showConfirmationDialog = show)
+        }
+    }
 }
