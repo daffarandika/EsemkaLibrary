@@ -12,6 +12,7 @@ import com.example.esemkalibrary.feature_myprofile.data.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.File
 
 class MyProfileViewModel(context: Context): ViewModel() {
 
@@ -42,10 +43,10 @@ class MyProfileViewModel(context: Context): ViewModel() {
             it.copy(borrowingHistory = cartItems)
         }
     }
-    fun updateProfilePhoto(profilePhoto: ImageBitmap?) {
-        _uiState.update {
-            it.copy(profilePhoto = profilePhoto)
-        }
+    fun updateProfilePhoto(profilePhoto: ImageBitmap) {
+//        viewModelScope.launch {
+//            val file: File = profilePhoto.
+//        }
     }
 
 }

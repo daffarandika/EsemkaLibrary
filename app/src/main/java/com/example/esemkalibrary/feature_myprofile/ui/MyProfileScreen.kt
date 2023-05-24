@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.esemkalibrary.MainActivity
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.LibraryButton
 import com.example.esemkalibrary.core.navigation.Screen
@@ -34,6 +35,7 @@ import com.example.esemkalibrary.feature_myprofile.data.User
 @Suppress("DEPRECATION")
 @Composable
 fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+    val context = LocalContext.current
     val viewModel: MyProfileViewModel = viewModel(factory = viewModelFactory {
         MyProfileViewModel(LocalContext.current)
     })
@@ -53,7 +55,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
     val ctx = LocalContext.current
     viewModel.updateName(user.name)
     viewModel.updateEmail(user.email)
-    viewModel.updateProfilePhoto(user.profilePhoto)
+//    viewModel.updateProfilePhoto(user.profilePhoto)
     viewModel.updateCartHistory(borrowingHistory)
     LazyColumn(
         modifier.padding(8.dp),
@@ -94,9 +96,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 )
                 LibraryButton(
                     onClick = {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(navController.graph.route!!){inclusive = true}
-                        }
+                        (context as? MainActivity)?.restartApp()
                     },
                     modifier = modifier.fillMaxWidth(),
                     text = "Logout"

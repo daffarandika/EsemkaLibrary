@@ -16,6 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -58,7 +60,16 @@ class ApiService(
         conn.setRequestProperty("Content-Type", "application/json")
         conn.setRequestProperty("Accept", "application/json")
 
-        val inputString = conn.inputStream.bufferedReader().readText()
+        val inputStringBuilder = StringBuilder()
+        val responseReader = BufferedReader(InputStreamReader(conn.inputStream))
+
+        var line: String?
+        while (responseReader.readLine().also { line = it } != null) {
+            inputStringBuilder.append(line)
+        }
+
+        responseReader.close()
+        val inputString = inputStringBuilder.toString()
         val jsonArray = JSONArray(inputString)
         val books = mutableListOf<BookHeader>()
         for (i in 0 until jsonArray.length()) {

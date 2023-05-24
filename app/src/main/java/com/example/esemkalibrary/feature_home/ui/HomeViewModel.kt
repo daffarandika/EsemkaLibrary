@@ -2,15 +2,17 @@ package com.example.esemkalibrary.feature_home.ui
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.model.BookHeader
 import com.example.esemkalibrary.feature_home.data.ApiService
 import com.example.esemkalibrary.feature_home.data.HomeUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 
-class HomeViewModel(context: Context): ViewModel() {
+class HomeViewModel(val context: Context): ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
     private val apiService = ApiService(context)
