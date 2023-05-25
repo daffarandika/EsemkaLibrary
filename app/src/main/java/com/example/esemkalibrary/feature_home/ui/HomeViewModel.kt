@@ -36,6 +36,7 @@ class HomeViewModel(val context: Context): ViewModel() {
         viewModelScope.launch{
             searchBooks(query = "")
             newToken = token.filter{
+                Log.e("TAG", "init hvm: $it", )
                 it != ""
             }.first()
         }
@@ -54,6 +55,7 @@ class HomeViewModel(val context: Context): ViewModel() {
                 _homeState.update { state ->
                     state.copy(data = books, isLoading = false)
                 }
+                Log.e("TAG", "searchBooks: homeUIstate ${homeState.value}", )
             }
         }
     }

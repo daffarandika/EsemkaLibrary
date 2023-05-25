@@ -46,13 +46,14 @@ class LocalStorage(private val context: Context) {
         }
     }
     suspend fun addItemToCart(bookId: String) {
+        if (bookId.isEmpty()) return
         context.dataStore.edit {
             if (it[CART_ITEMS_KEY] == "") {
                 it[CART_ITEMS_KEY] = bookId
             } else {
-                if (!it[CART_ITEMS_KEY]?.split(";")?.contains(bookId)!!) {
-                    it[CART_ITEMS_KEY] = "${it[CART_ITEMS_KEY]};$bookId"
-                }
+                val bookIds = (it[CART_ITEMS_KEY] ?: "").split(";").toMutableSet()
+                bookIds.add(bookId)
+                it[CART_ITEMS_KEY] = bookIds.joinToString(";")
             }
         }
     }

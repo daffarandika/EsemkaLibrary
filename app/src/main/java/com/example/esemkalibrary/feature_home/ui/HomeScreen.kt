@@ -43,43 +43,44 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController, 
 //        homeViewModel.uiState.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 //    }
 //    val books: List<BookHeader> = exampleEntitiesFlowLifecycleAware.collectAsState(initial = HomeUiState()).value.books
-    if (homeUiState.isLoading) {
-        CircularProgressIndicator()
-    } else if (homeUiState.error != null) {
-        Toast.makeText(LocalContext.current, "${homeUiState.error}", Toast.LENGTH_SHORT).show()
-    } else {
-        val books = homeUiState.data
-        Column(modifier) {
-            LazyVerticalGrid(
-                cells = GridCells.Fixed(2),
-                content = {
-                    item(span = {
-                        GridItemSpan(this.maxCurrentLineSpan)
-                    }) {
-                        Column(modifier.padding(8.dp)) {
-                            LibraryTextField(
-                                value = uiState.searchText,
-                                onValueChange = {
-                                    homeViewModel.updateSearchText(it)
-                                    Log.e("TAG", "HomeScreen: searchedbooks ${uiState.searchText}", )
-                                },
-                                labelText = "List Books",
-                                modifier = Modifier.fillMaxWidth(),
-                                hint = { Text("Search") },
-                            )
-                        }
+    val books = homeUiState.data
+    Column(modifier) {
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2),
+            content = {
+                item(span = {
+                    GridItemSpan(this.maxCurrentLineSpan)
+                }) {
+                    Column(modifier.padding(8.dp)) {
+                        LibraryTextField(
+                            value = uiState.searchText,
+                            onValueChange = {
+                            },
+                            labelText = "List Books",
+                            modifier = Modifier.fillMaxWidth(),
+                            hint = { Text("Search") },
+                        )
                     }
-                    items(books!!) { book ->
-                        BookCard(book = book, onClick = {
-                            navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
-                        })
-                    }
-                    Log.e("TAG", "HomeScreen: books = $books", )
-                },
-                contentPadding = PaddingValues(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            )
-        }
+                }
+                items(books ?: emptyList()) { book ->
+                    BookCard(book = book, onClick = {
+                        navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
+                    })
+                }
+            },
+            contentPadding = PaddingValues(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        )
     }
+}
+@ExperimentalFoundationApi
+@Composable
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+
+    val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory {
+        HomeViewModel(LocalContext.current)
+    })
+
+    HomeScreen(navController = navController, homeViewModel = homeViewModel)
 }

@@ -12,23 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.R
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.navigation.Screen
 import com.example.esemkalibrary.core.navigation.nav_graph.main.MainNavGraph
-import com.example.esemkalibrary.feature_borrowingdetail.ui.BorrowingDetailScreen
-import com.example.esemkalibrary.feature_forum.ui.AddThreadScreen
-import com.example.esemkalibrary.feature_forum.ui.ForumScreen
-import com.example.esemkalibrary.feature_home.ui.HomeScreen
-import com.example.esemkalibrary.feature_home.ui.HomeViewModel
 import com.example.esemkalibrary.feature_main.data.BottomNavigationItem
-import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 
 @ExperimentalFoundationApi
 @Composable
-fun MainScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
+fun MainScreen(modifier: Modifier = Modifier) {
     var activeIndex by remember {
         mutableStateOf(0)
     }
@@ -65,7 +58,7 @@ fun MainScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
         backgroundColor = SandBrown
     ) {
         Box(modifier.padding(it)) {
-            MainNavGraph(navController = navController, homeViewModel)
+            MainNavGraph(navController = navController)
         }
     }
 }

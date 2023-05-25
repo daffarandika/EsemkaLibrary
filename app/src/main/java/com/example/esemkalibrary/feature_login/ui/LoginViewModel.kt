@@ -8,6 +8,7 @@ import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.feature_login.data.ApiService
 import com.example.esemkalibrary.feature_login.data.LoginUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -70,6 +71,7 @@ class LoginViewModel(context: Context): ViewModel() {
                     _loginState.update {
                         it.copy(data = token, isLoading = false, error = null)
                     }
+                    this.cancel()
                 }
 
 
