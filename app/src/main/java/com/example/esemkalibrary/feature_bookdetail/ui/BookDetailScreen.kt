@@ -32,7 +32,7 @@ fun BookDetailScreen(modifier: Modifier = Modifier, bookId: String) {
         BookDetailViewModel(LocalContext.current)
     })
     val token by viewModel.token.collectAsState(initial = "")
-    val uiState by viewModel.getData(token = token, bookId = bookId).collectAsState(initial = BookDetailUiState())
+    val uiState by viewModel.getData(token = token ?: "", bookId = bookId).collectAsState(initial = BookDetailUiState())
     if (uiState.name.isBlank()) {
         CircularProgressIndicator(Modifier.fillMaxSize())
     }

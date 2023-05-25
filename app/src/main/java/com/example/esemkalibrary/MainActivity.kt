@@ -5,9 +5,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.esemkalibrary.core.components.theme.EsemkaLibraryTheme
 import com.example.esemkalibrary.core.navigation.nav_graph.auth.AuthNavGraph
+import com.example.esemkalibrary.core.utils.viewModelFactory
+import com.example.esemkalibrary.feature_home.ui.HomeViewModel
 
 class MainActivity : ComponentActivity() {
     fun restartApp() {
@@ -22,8 +25,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             EsemkaLibraryTheme {
+                val homeViewModel: HomeViewModel = viewModel(factory = viewModelFactory {
+                    HomeViewModel(applicationContext)
+                })
                 val navController = rememberNavController()
-                AuthNavGraph(navController = navController)
+                AuthNavGraph(navController = navController, homeViewModel)
             }
         }
     }

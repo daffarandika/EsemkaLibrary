@@ -22,12 +22,13 @@ import com.example.esemkalibrary.feature_borrowingdetail.ui.BorrowingDetailScree
 import com.example.esemkalibrary.feature_forum.ui.AddThreadScreen
 import com.example.esemkalibrary.feature_forum.ui.ForumScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
+import com.example.esemkalibrary.feature_home.ui.HomeViewModel
 import com.example.esemkalibrary.feature_main.data.BottomNavigationItem
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 
 @ExperimentalFoundationApi
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier, homeViewModel: HomeViewModel) {
     var activeIndex by remember {
         mutableStateOf(0)
     }
@@ -64,7 +65,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         backgroundColor = SandBrown
     ) {
         Box(modifier.padding(it)) {
-            MainNavGraph(navController = navController)
+            MainNavGraph(navController = navController, homeViewModel)
         }
     }
 }

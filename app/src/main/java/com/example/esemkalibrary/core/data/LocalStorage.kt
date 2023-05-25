@@ -8,14 +8,18 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 class LocalStorage(private val context: Context) {
 
-    val token: Flow<String> = context.dataStore.data
-        .map {
-            it[TOKEN_KEY] ?: ""
-        }
+    val token2: String = runBlocking {
+        context.dataStore.data.first().get(TOKEN_KEY) ?: ""
+    }
+    val token = context.dataStore.data.map {
+        it[TOKEN_KEY] ?: ""
+    }
     suspend fun clearToken() {
         setToken("")
     }

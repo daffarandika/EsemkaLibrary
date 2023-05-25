@@ -2,6 +2,9 @@ package com.example.esemkalibrary.core.navigation.nav_graph.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,8 +14,10 @@ import com.example.esemkalibrary.core.navigation.nav_graph.main.forum.forumNavGr
 import com.example.esemkalibrary.core.navigation.nav_graph.main.cart.cartNavGraph
 import com.example.esemkalibrary.core.navigation.nav_graph.main.home.homeNavGraph
 import com.example.esemkalibrary.core.navigation.nav_graph.main.profile.profileNavGraph
+import com.example.esemkalibrary.core.utils.viewModelFactory
 import com.example.esemkalibrary.feature_forum.ui.ForumScreen
 import com.example.esemkalibrary.feature_home.ui.HomeScreen
+import com.example.esemkalibrary.feature_home.ui.HomeViewModel
 import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.feature_mycart.ui.MyCartScreen
 import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
@@ -20,14 +25,17 @@ import com.example.esemkalibrary.feature_myprofile.ui.MyProfileScreen
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MainNavGraph(navController: NavHostController) {
+fun MainNavGraph(navController: NavHostController, homeViewModel: HomeViewModel) {
     NavHost(
         navController = navController,
         startDestination = Screen.Main.route,
-        route = MAIN_GRAPH_ROUTE
+        route = MAIN_GRAPH_ROUTE,
     ) {
         composable(route = Screen.Main.route) {
-            HomeScreen(navController = navController)
+            HomeScreen(
+                navController = navController,
+                homeViewModel = homeViewModel
+            )
         }
         composable(route = Screen.Forum.route) {
             ForumScreen(navController = navController)

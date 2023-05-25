@@ -55,6 +55,7 @@ fun LoginScreen(
             Toast.makeText(ctx, "${loginState.value.error}", Toast.LENGTH_SHORT)
                 .show()
         } else if (loginState.value.data != null ) {
+            viewModel.getAndSaveToken()
             navController.navigate(route = Screen.Main.route) {
                 popUpTo(route = Screen.Login.route) {
                     inclusive = true

@@ -1,6 +1,7 @@
 package com.example.esemkalibrary.feature_home.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -12,58 +13,73 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.esemkalibrary.core.components.LibraryTextField
+import com.example.esemkalibrary.core.data.LocalStorage
+import com.example.esemkalibrary.core.model.BookHeader
 import com.example.esemkalibrary.core.navigation.Screen
 import com.example.esemkalibrary.core.utils.viewModelFactory
+import com.example.esemkalibrary.feature_home.data.HomeUiState
+import kotlinx.coroutines.flow.collect
 
 @ExperimentalFoundationApi
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) {
-    val viewModel: HomeViewModel = viewModel(factory = viewModelFactory {
-        HomeViewModel(LocalContext.current)
-    })
-    val uiState by viewModel.uiState.collectAsState()
-    val token =  viewModel.token.collectAsState(initial = "").value
-    viewModel.updateBooks(viewModel.searchBooks(token = token, query = uiState.searchText).collectAsState(initial = emptyList()).value)
-    Column(modifier) {
-        if (uiState.books.isEmpty()) {
-                CircularProgressIndicator(Modifier.fillMaxSize())
-        }
-        LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            content = {
-                item(span = {
-                    GridItemSpan(this.maxCurrentLineSpan)
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController, homeViewModel: HomeViewModel) {
 
-                }) {
-                    Column(modifier.padding(8.dp)) {
-                        LibraryTextField(
-                            value = uiState.searchText,
-                            onValueChange = {
-                                viewModel.updateSearchText(it)
-                                Log.e("TAG", "HomeScreen: searchedbooks ${uiState.searchText}", )
-                            },
-                            labelText = "List Books",
-                            modifier = Modifier.fillMaxWidth(),
-                            hint = { Text("Search") },
-                        )
+    val homeUiState by homeViewModel.homeState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsState()
+
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//    val exampleEntitiesFlowLifecycleAware = remember(homeViewModel.searchBooks(query = ""), lifecycleOwner) {
+//        homeViewModel.uiState.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+//    }
+//    val books: List<BookHeader> = exampleEntitiesFlowLifecycleAware.collectAsState(initial = HomeUiState()).value.books
+    if (homeUiState.isLoading) {
+        CircularProgressIndicator()
+    } else if (homeUiState.error != null) {
+        Toast.makeText(LocalContext.current, "${homeUiState.error}", Toast.LENGTH_SHORT).show()
+    } else {
+        val books = homeUiState.data
+        Column(modifier) {
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(2),
+                content = {
+                    item(span = {
+                        GridItemSpan(this.maxCurrentLineSpan)
+                    }) {
+                        Column(modifier.padding(8.dp)) {
+                            LibraryTextField(
+                                value = uiState.searchText,
+                                onValueChange = {
+                                    homeViewModel.updateSearchText(it)
+                                    Log.e("TAG", "HomeScreen: searchedbooks ${uiState.searchText}", )
+                                },
+                                labelText = "List Books",
+                                modifier = Modifier.fillMaxWidth(),
+                                hint = { Text("Search") },
+                            )
+                        }
                     }
-                }
-                items(uiState.books) { book ->
-                    BookCard(book = book, onClick = {
-                        navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
-                    })
-                }
-            },
-            contentPadding = PaddingValues(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        )
+                    items(books!!) { book ->
+                        BookCard(book = book, onClick = {
+                            navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
+                        })
+                    }
+                    Log.e("TAG", "HomeScreen: books = $books", )
+                },
+                contentPadding = PaddingValues(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            )
+        }
     }
 }

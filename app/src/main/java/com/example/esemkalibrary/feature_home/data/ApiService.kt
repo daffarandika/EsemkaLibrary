@@ -49,7 +49,7 @@ class ApiService(
     }
 
     fun searchBooks(token: String, query: String?): Flow<List<BookHeader>> = flow {
-        Log.e("TAG", "searchBooks: $token", )
+        Log.e("TAG", "request was made searchBooks: $token", )
         if (token.isEmpty()) {
             emit(emptyList())
             return@flow

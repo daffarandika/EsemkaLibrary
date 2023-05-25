@@ -8,13 +8,14 @@ import androidx.navigation.compose.composable
 import com.example.esemkalibrary.core.navigation.AUTH_GRAPH_ROUTE
 import com.example.esemkalibrary.core.navigation.Screen
 import com.example.esemkalibrary.core.navigation.nav_graph.main.MainNavGraph
+import com.example.esemkalibrary.feature_home.ui.HomeViewModel
 import com.example.esemkalibrary.feature_login.ui.LoginScreen
 import com.example.esemkalibrary.feature_main.ui.MainScreen
 import com.example.esemkalibrary.feature_signup.ui.SignUpScreen
 
 @ExperimentalFoundationApi
 @Composable
-fun AuthNavGraph(navController: NavHostController) {
+fun AuthNavGraph(navController: NavHostController, homeViewModel: HomeViewModel) {
     NavHost(
         navController = navController,
         startDestination = Screen.Login.route,
@@ -27,7 +28,7 @@ fun AuthNavGraph(navController: NavHostController) {
             SignUpScreen(navController = navController)
         }
         composable(route = Screen.Main.route) {
-            MainScreen()
+            MainScreen(homeViewModel = homeViewModel)
         }
     }
 }
