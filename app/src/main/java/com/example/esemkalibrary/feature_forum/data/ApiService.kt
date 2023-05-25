@@ -110,8 +110,9 @@ class ApiService {
             val conn = URL("$BASE_URL:$PORT/api/forum").openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Authorization", "Bearer $token")
-            conn.setRequestProperty("Accept", "application/json")
+            conn.setRequestProperty("Accept", "text/plain")
             conn.setRequestProperty("Content-type", "application/json")
+            conn.doOutput = true
 
             val requestBody = JSONObject().apply {
                 put("subject", subject)
