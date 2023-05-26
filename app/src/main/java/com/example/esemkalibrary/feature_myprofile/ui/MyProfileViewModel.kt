@@ -1,6 +1,7 @@
 package com.example.esemkalibrary.feature_myprofile.ui
 
 import android.content.Context
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
@@ -49,58 +50,63 @@ class MyProfileViewModel(context: Context): ViewModel() {
     }
     fun updateProfilePhoto(profilePhoto: File, token :String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val twoHyphens = "--"
-            val boundary = "*****" + java.lang.Long.toString(System.currentTimeMillis()) + "*****"
-            val lineEnd = "\r\n"
             val conn = URL("$BASE_URL:$PORT/Api/User/Me/Photo").openConnection() as HttpURLConnection
-            conn.requestMethod = "POST"
+
+            val boundary = "*****"
+            val lineEnd = "\r\n"
+
             conn.doOutput = true
-            conn.setRequestProperty("accept", "*/*")
+            conn.doInput = true
+            conn.useCaches = false
+            conn.requestMethod = "POST"
+
+            conn.setRequestProperty("Connection", "Keep-Alive")
             conn.setRequestProperty("Authorization", "Bearer $token")
-            conn.setRequestProperty("Content-type", "multipart/form-data")
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
+
+            val outputStream = DataOutputStream(conn.outputStream)
+            val writer = BufferedWriter(OutputStreamWriter(outputStream, "UTF-8"))
+
+            writer.write("--$boundary$lineEnd")
+            writer.write("Content-Disposition: form-data; name=\"file\"; filename=\"${profilePhoto.name}\"$lineEnd")
+            writer.write("Content-Type: image/jpeg$lineEnd")
+            writer.write(lineEnd)
+            writer.flush()
 
             val fileInputStream = FileInputStream(profilePhoto)
-
-            // Create the data output stream to write the request body
-            val outputStream = DataOutputStream(conn.outputStream)
-
-            // Start writing the request body
-//            outputStream.writeBytes(twoHyphens + boundary + lineEnd)
-            outputStream.writeBytes("Content-Disposition: form-data; name=\"file\";type=image/jpeg;filename=\"${profilePhoto.name}\"$lineEnd")
-//            outputStream.writeBytes(lineEnd)
-
-            // Read the image file and write it to the output stream
-            val bufferSize = 1024*1024*1
+            val bufferSize = 1024
             val buffer = ByteArray(bufferSize)
             var bytesRead: Int
+
             while (fileInputStream.read(buffer, 0, bufferSize).also { bytesRead = it } >= 0) {
                 outputStream.write(buffer, 0, bytesRead)
             }
 
             outputStream.writeBytes(lineEnd)
-            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
+            outputStream.writeBytes("--$boundary--$lineEnd")
 
-            // Flush and close the streams
+            writer.close()
             outputStream.flush()
             outputStream.close()
             fileInputStream.close()
 
-            val status: Int = conn.responseCode
-           if (status == HttpURLConnection.HTTP_NO_CONTENT) {
-                val inS = BufferedReader(InputStreamReader(conn.getInputStream()))
-                var inputLine: String?
-                val response = StringBuffer()
-                while (inS.readLine().also { inputLine = it } != null) {
-                    response.append(inputLine)
+            val responseCode = conn.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val reader = BufferedReader(InputStreamReader(conn.inputStream))
+                val response = StringBuilder()
+                var responseLine: String?
+
+                while (reader.readLine().also { responseLine = it } != null) {
+                    response.append(responseLine)
                 }
-                conn.disconnect()
-                fileInputStream.close()
-                outputStream.flush()
-                outputStream.close()
-                response.toString()
+
+                reader.close()
+                println("Upload successful. Response: $response")
             } else {
-                throw Exception("Non ok response returned")
+                println("Upload failed. Response code: $responseCode")
             }
+
+            conn.disconnect()
 
         }
     }
