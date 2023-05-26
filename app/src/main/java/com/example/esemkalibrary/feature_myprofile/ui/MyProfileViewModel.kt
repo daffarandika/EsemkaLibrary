@@ -1,9 +1,10 @@
 package com.example.esemkalibrary.feature_myprofile.ui
 
 import android.content.Context
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
+import com.example.esemkalibrary.core.data.ApiConfig.PORT
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.feature_myprofile.data.ApiService
 import com.example.esemkalibrary.feature_myprofile.data.CartItem
@@ -12,7 +13,10 @@ import com.example.esemkalibrary.feature_myprofile.data.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.io.File
+import java.io.*
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class MyProfileViewModel(context: Context): ViewModel() {
 
@@ -43,10 +47,62 @@ class MyProfileViewModel(context: Context): ViewModel() {
             it.copy(borrowingHistory = cartItems)
         }
     }
-    fun updateProfilePhoto(profilePhoto: ImageBitmap) {
-//        viewModelScope.launch {
-//            val file: File = profilePhoto.
-//        }
+    fun updateProfilePhoto(profilePhoto: File, token :String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val twoHyphens = "--"
+            val boundary = "*****" + java.lang.Long.toString(System.currentTimeMillis()) + "*****"
+            val lineEnd = "\r\n"
+            val conn = URL("$BASE_URL:$PORT/Api/User/Me/Photo").openConnection() as HttpURLConnection
+            conn.requestMethod = "POST"
+            conn.doOutput = true
+            conn.setRequestProperty("accept", "*/*")
+            conn.setRequestProperty("Authorization", "Bearer $token")
+            conn.setRequestProperty("Content-type", "multipart/form-data")
+
+            val fileInputStream = FileInputStream(profilePhoto)
+
+            // Create the data output stream to write the request body
+            val outputStream = DataOutputStream(conn.outputStream)
+
+            // Start writing the request body
+//            outputStream.writeBytes(twoHyphens + boundary + lineEnd)
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"file\";type=image/jpeg;filename=\"${profilePhoto.name}\"$lineEnd")
+//            outputStream.writeBytes(lineEnd)
+
+            // Read the image file and write it to the output stream
+            val bufferSize = 1024*1024*1
+            val buffer = ByteArray(bufferSize)
+            var bytesRead: Int
+            while (fileInputStream.read(buffer, 0, bufferSize).also { bytesRead = it } >= 0) {
+                outputStream.write(buffer, 0, bytesRead)
+            }
+
+            outputStream.writeBytes(lineEnd)
+            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
+
+            // Flush and close the streams
+            outputStream.flush()
+            outputStream.close()
+            fileInputStream.close()
+
+            val status: Int = conn.responseCode
+           if (status == HttpURLConnection.HTTP_NO_CONTENT) {
+                val inS = BufferedReader(InputStreamReader(conn.getInputStream()))
+                var inputLine: String?
+                val response = StringBuffer()
+                while (inS.readLine().also { inputLine = it } != null) {
+                    response.append(inputLine)
+                }
+                conn.disconnect()
+                fileInputStream.close()
+                outputStream.flush()
+                outputStream.close()
+                response.toString()
+            } else {
+                throw Exception("Non ok response returned")
+            }
+
+        }
     }
 
 }

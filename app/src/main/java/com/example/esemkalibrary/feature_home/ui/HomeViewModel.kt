@@ -30,7 +30,7 @@ class HomeViewModel(val context: Context): ViewModel() {
     private val apiService = ApiService(context)
 
     val token = LocalStorage(context).token
-    lateinit var newToken:String
+    lateinit var newToken: String
 
     init {
         viewModelScope.launch{
@@ -38,7 +38,7 @@ class HomeViewModel(val context: Context): ViewModel() {
             newToken = token.filter{
                 Log.e("TAG", "init hvm: $it", )
                 it != ""
-            }.first()
+            }.firstOrNull() ?: ""
         }
     }
 

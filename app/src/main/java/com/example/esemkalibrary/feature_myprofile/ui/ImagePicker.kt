@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.core.net.toFile
 import com.example.esemkalibrary.R
 
 @Suppress("DEPRECATION")
@@ -41,13 +42,7 @@ fun ImagePicker(modifier: Modifier = Modifier) {
         }
     )
 
-    imageUri?.let {
-        bitmap = if (Build.VERSION.SDK_INT >= 28) {
-            ImageDecoder.decodeBitmap(ImageDecoder.createSource(context.contentResolver, it))
-        } else {
-            MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-        }
-    }
+    imageUri?.toFile()
 
     Column(
         modifier = modifier.fillMaxSize(),
