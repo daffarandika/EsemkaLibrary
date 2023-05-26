@@ -20,6 +20,8 @@ import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.navigation.Screen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -39,9 +41,7 @@ fun LoginScreen(
     val uiState = viewModel.uiState.collectAsState()
     val loginState = viewModel.loginState.collectAsState()
 
-
-
-
+    val scope = rememberCoroutineScope()
 
     val cart  = LocalStorage(LocalContext.current).bookIdInCart.collectAsState(initial = "")
     emailLabel = cart.value
@@ -81,20 +81,25 @@ fun LoginScreen(
         )
         Spacer(Modifier.size(16.dp))
         LibraryButton(text = "Login", onClick = {
-            if (!viewModel.isReadyToLogin()) {
-                if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(false)
-                if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(false)
-            } else {
-                viewModel.getAndSaveToken()
-                if (loginState.value.isLoading) {
-                    Log.e("TAG", "LoginScreen: Loading", )
-                } else if (loginState.value.error != null) {
-                    Toast.makeText(ctx, "${loginState.value.error}", Toast.LENGTH_SHORT)
-                        .show()
-                } else if (loginState.value.data != null ) {
-                    navController.navigate(route = Screen.Main.route) {
-                        popUpTo(route = Screen.Login.route) {
-                            inclusive = true
+            scope.launch {
+                if (!viewModel.isReadyToLogin()) {
+                    if (uiState.value.password.isBlank()) viewModel.updatePasswordError(true) else viewModel.updatePasswordError(
+                        false)
+                    if (uiState.value.email.isBlank()) viewModel.updateEmailError(true) else viewModel.updateEmailError(
+                        false)
+                } else {
+                    viewModel.getAndSaveToken()
+                    delay(500)
+                    if (loginState.value.isLoading) {
+                        Log.e("TAG", "LoginScreen: Loading")
+                    } else if (loginState.value.error != null) {
+                        Toast.makeText(ctx, "${loginState.value.error}", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (loginState.value.data != null) {
+                        navController.navigate(route = Screen.Main.route) {
+                            popUpTo(route = Screen.Login.route) {
+                                inclusive = true
+                            }
                         }
                     }
                 }

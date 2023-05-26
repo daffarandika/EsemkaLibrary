@@ -3,11 +3,10 @@ package com.example.esemkalibrary.feature_myprofile.ui
 import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.provider.OpenableColumns
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -20,8 +19,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -113,6 +112,7 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
     viewModel.updateEmail(user.email)
 //    viewModel.updateProfilePhoto(user.profilePhoto)
     viewModel.updateCartHistory(borrowingHistory)
+    Log.e("TAG", "MyProfileScreen: isNull ${user.profilePhoto == null}", )
     LazyColumn(
         modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -124,12 +124,14 @@ fun MyProfileScreen(modifier: Modifier = Modifier, navController: NavHostControl
                 .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Image(
-                    painter = if (uiState.profilePhoto == null) painterResource(id = R.drawable.photoprofiledefault) else BitmapPainter(uiState.profilePhoto!!),
+                    painter = if (user.profilePhoto == null) painterResource(id = R.drawable.photoprofiledefault) else BitmapPainter(user.profilePhoto!!),
                     contentDescription =  "Profile photo",
                     modifier = modifier
-                        .size(256.dp)
                         .clip(shape = CircleShape)
+                        .size(256.dp),
+                    contentScale = ContentScale.FillWidth
                 )
                 LibraryButton(onClick = {
                     launcher.launch("image/*")

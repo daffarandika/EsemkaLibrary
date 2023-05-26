@@ -6,42 +6,45 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.processNextEventInCurrentThread
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 
 class ApiService {
 
-    suspend fun getImage(token: String): ImageBitmap? {
+    fun getImage(token: String): Flow<ImageBitmap> = flow {
         if (token.isBlank()) {
-            return null
+            throw Exception("Token is blank")
         }
-        var bitmap: ImageBitmap?
-        try {
-            withContext(Dispatchers.IO) {
-                val conn = URL("$BASE_URL:$PORT/api/user/me/photo").openConnection() as HttpURLConnection
-                conn.setRequestProperty("Authorization", "Bearer $token")
-                conn.setRequestProperty("Content-Type", "application/json")
-                val inputStream = conn.inputStream
-                bitmap = BitmapFactory.decodeStream(inputStream).asImageBitmap()
-            }
-        } catch (e: java.lang.Exception) {
-            bitmap = null
-        }
-        return bitmap
-    }
 
-    fun getUserDetail(token: String): Flow<User> = flow {
+        val conn = URL("$BASE_URL:$PORT/api/user/me/photo").openConnection() as HttpURLConnection
+        conn.requestMethod = "GET"
+        conn.setRequestProperty("Authorization", "Bearer $token")
+        try {
+            val inputStream = conn.inputStream
+            val bitmap = withContext(Dispatchers.IO){
+                BitmapFactory.decodeStream(inputStream).asImageBitmap()
+            }
+            emit(bitmap)
+        } catch (e: CancellationException){
+            Log.e("TAG", "getImage: ${e.message}", )
+        } finally {
+            conn.disconnect()
+        }
+
+    }.flowOn(Dispatchers.IO)
+
+    fun getUserDetail(token: String, imageBitmap: ImageBitmap): Flow<User> = flow {
         if (token.isBlank()) {
             emit(User())
             return@flow
@@ -56,10 +59,10 @@ class ApiService {
         val user = User(
             name = jsonObject.getString("name"),
             email = jsonObject.getString("email"),
-            profilePhoto = getImage(token),
+            profilePhoto = imageBitmap,
         )
         emit(user)
-        Log.e("TAG", "getUserDetail: ${conn.responseCode}", )
+        Log.e("TAG", "getUserDetail: $user", )
     }.flowOn(Dispatchers.IO)
 
     fun getCartHistory(token: String): Flow<List<CartItem>> = flow {

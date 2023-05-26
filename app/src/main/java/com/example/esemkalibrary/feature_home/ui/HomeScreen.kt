@@ -24,6 +24,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.esemkalibrary.core.components.LibraryTextField
+import com.example.esemkalibrary.core.components.theme.MudBrown
+import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.model.BookHeader
 import com.example.esemkalibrary.core.navigation.Screen
@@ -38,40 +40,39 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController, 
     val homeUiState by homeViewModel.homeState.collectAsState()
     val uiState by homeViewModel.uiState.collectAsState()
 
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//    val exampleEntitiesFlowLifecycleAware = remember(homeViewModel.searchBooks(query = ""), lifecycleOwner) {
-//        homeViewModel.uiState.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
-//    }
-//    val books: List<BookHeader> = exampleEntitiesFlowLifecycleAware.collectAsState(initial = HomeUiState()).value.books
     val books = homeUiState.data
-    Column(modifier) {
-        LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            content = {
-                item(span = {
-                    GridItemSpan(this.maxCurrentLineSpan)
-                }) {
-                    Column(modifier.padding(8.dp)) {
-                        LibraryTextField(
-                            value = uiState.searchText,
-                            onValueChange = {
-                            },
-                            labelText = "List Books",
-                            modifier = Modifier.fillMaxWidth(),
-                            hint = { Text("Search") },
-                        )
+    if (books == null || books.isEmpty()) {
+        CircularProgressIndicator(modifier = Modifier.fillMaxSize().padding(16.dp), color = MudBrown)
+    } else {
+        Column(modifier) {
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(2),
+                content = {
+                    item(span = {
+                        GridItemSpan(this.maxCurrentLineSpan)
+                    }) {
+                        Column(modifier.padding(8.dp)) {
+                            LibraryTextField(
+                                value = uiState.searchText,
+                                onValueChange = {
+                                },
+                                labelText = "List Books",
+                                modifier = Modifier.fillMaxWidth(),
+                                hint = { Text("Search") },
+                            )
+                        }
                     }
-                }
-                items(books ?: emptyList()) { book ->
-                    BookCard(book = book, onClick = {
-                        navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
-                    })
-                }
-            },
-            contentPadding = PaddingValues(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        )
+                    items(books ?: emptyList()) { book ->
+                        BookCard(book = book, onClick = {
+                            navController.navigate(Screen.BookDetail.passBookId(bookId = book.id))
+                        })
+                    }
+                },
+                contentPadding = PaddingValues(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            )
+        }
     }
 }
 @ExperimentalFoundationApi

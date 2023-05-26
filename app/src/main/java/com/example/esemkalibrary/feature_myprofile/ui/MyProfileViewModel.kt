@@ -1,7 +1,6 @@
 package com.example.esemkalibrary.feature_myprofile.ui
 
 import android.content.Context
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
@@ -27,7 +26,10 @@ class MyProfileViewModel(context: Context): ViewModel() {
     val token = LocalStorage(context).token
 
     fun getUserDetail(token: String): Flow<User> {
-        return ApiService().getUserDetail(token).flowOn(Dispatchers.Main)
+
+        return ApiService().getImage(token).flatMapMerge {
+            ApiService().getUserDetail(token, it)
+        }.flowOn(Dispatchers.Main)
     }
     fun getCartHistory(token: String): Flow<List<CartItem>> {
         return ApiService().getCartHistory(token).flowOn(Dispatchers.Main)
