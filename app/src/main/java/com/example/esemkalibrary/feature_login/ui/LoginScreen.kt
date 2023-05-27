@@ -19,6 +19,7 @@ import com.example.esemkalibrary.core.components.LibraryPasswordTextField
 import com.example.esemkalibrary.core.components.LibraryTextField
 import com.example.esemkalibrary.core.components.theme.SandBrown
 import com.example.esemkalibrary.core.data.LocalStorage
+import com.example.esemkalibrary.core.model.Output
 import com.example.esemkalibrary.core.navigation.Screen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,9 +40,31 @@ fun LoginScreen(
     val ctx = LocalContext.current
 
     val uiState = viewModel.uiState.collectAsState()
-    val loginState = viewModel.loginState.collectAsState()
 
     val scope = rememberCoroutineScope()
+
+    val loginState by remember { viewModel.loginState }.collectAsState()
+
+    LaunchedEffect(loginState) {
+        when (loginState) {
+            is Output.Loading -> {
+    //                            CircularProgressIndicator()
+                Log.e(":", "LoginScreen: loading", )
+            }
+            is Output.Success -> {
+                navController.navigate(route = Screen.Main.route) {
+                    popUpTo(route = Screen.Login.route) {
+                        inclusive = true
+                    }
+                }
+            }
+            is Output.Error -> {
+                Toast.makeText(ctx, "Invalid email or password", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
 
     val cart  = LocalStorage(LocalContext.current).bookIdInCart.collectAsState(initial = "")
     emailLabel = cart.value
@@ -90,18 +113,6 @@ fun LoginScreen(
                 } else {
                     viewModel.getAndSaveToken()
                     delay(500)
-                    if (loginState.value.isLoading) {
-                        Log.e("TAG", "LoginScreen: Loading")
-                    } else if (loginState.value.error != null) {
-                        Toast.makeText(ctx, "${loginState.value.error}", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (loginState.value.data != null) {
-                        navController.navigate(route = Screen.Main.route) {
-                            popUpTo(route = Screen.Login.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
                 }
             }
         }, modifier = Modifier.fillMaxWidth()
@@ -110,5 +121,6 @@ fun LoginScreen(
         LibraryButton(text = "Sign Up", onClick = {
             navController.navigate(Screen.SignUp.route)
         }, modifier = Modifier.fillMaxWidth())
+
     }
 }

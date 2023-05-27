@@ -5,10 +5,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.esemkalibrary.core.data.LocalStorage
+import com.example.esemkalibrary.core.model.Output
 import com.example.esemkalibrary.feature_login.data.ApiService
 import com.example.esemkalibrary.feature_login.data.LoginUiState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -21,8 +20,8 @@ class LoginViewModel(context: Context): ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    val _loginState = MutableStateFlow(UiState(isLoading = true))
-    val loginState: StateFlow<UiState> = _loginState
+    private val _loginState = MutableStateFlow<Output<String>>(Output.Loading)
+    val loginState: StateFlow<Output<String>> = _loginState.asStateFlow()
 
     fun updateEmailInput(email: String) {
         _uiState.update{
@@ -62,23 +61,14 @@ class LoginViewModel(context: Context): ViewModel() {
                 apiService.getToken(
                     uiState.value.email,
                     uiState.value.password
-                ).catch {  err ->
-                    _loginState.update {
-                        it.copy(error = err.message, isLoading = false)
-                    }
-                }.collect { token ->
-                    dataStore.setToken(token)
-                    _loginState.update {
-                        it.copy(data = token, isLoading = false, error = null)
-                    }
-                    this.cancel()
+                ).onStart {
+                    _loginState.value = Output.Loading
+                }.catch { e ->
+                    _loginState.value = Output.Error(exception = e)
+                }.collect { response ->
+                    dataStore.setToken(response)
+                    _loginState.value = Output.Success(response)
                 }
-
-
-
-            //            _uiState.update {
-    //                it.copy(loginErrorMessage = null)
-    //            }
             }
         Log.e("TAG", "LoginViewModel: ${_uiState.value}")
     }

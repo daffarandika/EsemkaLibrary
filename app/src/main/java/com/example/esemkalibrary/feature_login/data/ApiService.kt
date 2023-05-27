@@ -3,6 +3,8 @@ package com.example.esemkalibrary.feature_login.data
 import android.util.Log
 import com.example.esemkalibrary.core.data.ApiConfig.BASE_URL
 import com.example.esemkalibrary.core.data.ApiConfig.PORT
+import com.example.esemkalibrary.core.model.Output
+import com.example.esemkalibrary.core.model.TokenExpiredException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -25,25 +27,37 @@ class ApiService {
         conn.setRequestProperty("Accept", "application/json")
     }
 
-    suspend fun getToken(email: String, password: String): Flow<String> {
+    fun getToken(email: String, password: String): Flow<String> {
         return flow {
-            val outputStreamWriter = OutputStreamWriter(conn.outputStream)
-            outputStreamWriter.write("{\n" +
-                    "   \"email\": \"$email\",\n" +
-                    "   \"password\": \"$password\"\n" +
-                    "}")
-            outputStreamWriter.flush()
-            outputStreamWriter.close()
-            Log.e("TAG", "getToken: response code ${conn.responseCode}", )
-            if (conn.responseCode != 200) {
-                throw Exception("Invalid email or password")
+
+            val requestBody = JSONObject()
+            requestBody.put("email", email)
+            requestBody.put("password", password)
+
+            conn.outputStream.use {
+                it.write(requestBody.toString().toByteArray())
             }
-            val input = conn.inputStream.bufferedReader().readText()
-            val jsonObject = JSONObject(input)
-            emit(jsonObject.getString("token"))
-            conn.disconnect()
-        }
-            .flowOn(Dispatchers.IO)
+            val responseCode = conn.responseCode
+
+            val response = if (responseCode == HttpURLConnection.HTTP_OK) {
+                val inputStream = conn.inputStream
+                val responseBody = inputStream.bufferedReader().use {
+                    it.readText()
+                }
+                inputStream.close()
+
+                val jsonObject = JSONObject(responseBody)
+                jsonObject.getString("token")
+            } else {
+                val errorStream = conn.errorStream
+                val responseBody = errorStream.bufferedReader().use {
+                    it.readText()
+                }
+                errorStream.close()
+                throw Exception(responseBody)
+            }
+            emit(response)
+        }.flowOn(Dispatchers.IO)
     }
 
 }
