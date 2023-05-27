@@ -2,6 +2,7 @@ package com.example.esemkalibrary.feature_home.data
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.media.session.MediaSession.Token
 import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.ImageBitmap
@@ -12,6 +13,8 @@ import com.example.esemkalibrary.core.data.LocalStorage
 import com.example.esemkalibrary.core.data.LocalStorage.Companion.TOKEN_KEY
 import com.example.esemkalibrary.core.data.LocalStorage.Companion.dataStore
 import com.example.esemkalibrary.core.model.BookHeader
+import com.example.esemkalibrary.core.model.Output
+import com.example.esemkalibrary.core.model.TokenExpiredException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
@@ -51,8 +54,7 @@ class ApiService(
     fun searchBooks(token: String, query: String?): Flow<List<BookHeader>> = flow {
         Log.e("TAG", "request was made searchBooks: $token", )
         if (token.isEmpty()) {
-            emit(emptyList())
-            return@flow
+            throw TokenExpiredException("Token has expired")
         }
         val conn = URL(if (query.isNullOrEmpty()) "$BASE_URL:$PORT/Api/Book" else "$BASE_URL:$PORT/Api/Book?searchText=$query").openConnection() as HttpURLConnection
         conn.requestMethod = "GET"
@@ -60,28 +62,40 @@ class ApiService(
         conn.setRequestProperty("Content-Type", "application/json")
         conn.setRequestProperty("Accept", "application/json")
 
-        val inputStringBuilder = StringBuilder()
-        val responseReader = BufferedReader(InputStreamReader(conn.inputStream))
+        if (conn.responseCode == HttpURLConnection.HTTP_OK) {
+            val inputStringBuilder = StringBuilder()
+            val responseReader = BufferedReader(InputStreamReader(conn.inputStream))
 
-        var line: String?
-        while (responseReader.readLine().also { line = it } != null) {
-            inputStringBuilder.append(line)
+            var line: String?
+            while (responseReader.readLine().also { line = it } != null) {
+                inputStringBuilder.append(line)
+            }
+            responseReader.close()
+            val inputString = inputStringBuilder.toString()
+            val jsonArray = JSONArray(inputString)
+            val books = mutableListOf<BookHeader>()
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                books.add(BookHeader(
+                    id = jsonObject.getString("id"),
+                    name = jsonObject.getString("name"),
+                    authors = jsonObject.getString("authors"),
+                    image = getImage(token = token, id = jsonObject.getString("id"))
+                ))
+            }
+            emit(books)
+        } else {
+            if (conn.responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                throw TokenExpiredException("Token has expired")
+            } else {
+                val errorStream = conn.errorStream
+                val responseBody = errorStream.bufferedReader().use {
+                    it.readText()
+                }
+                errorStream.close()
+                throw Exception(responseBody)
+            }
         }
 
-        responseReader.close()
-        val inputString = inputStringBuilder.toString()
-        val jsonArray = JSONArray(inputString)
-        val books = mutableListOf<BookHeader>()
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            books.add(BookHeader(
-                id = jsonObject.getString("id"),
-                name = jsonObject.getString("name"),
-                authors = jsonObject.getString("authors"),
-                image = getImage(token = token, id = jsonObject.getString("id"))
-            ))
-        }
-        emit(books)
-        Log.e("TAG", "searchBooks: $books", )
     }.flowOn(Dispatchers.IO)
 }

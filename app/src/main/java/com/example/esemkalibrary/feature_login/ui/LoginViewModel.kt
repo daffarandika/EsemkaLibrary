@@ -10,6 +10,7 @@ import com.example.esemkalibrary.feature_login.data.ApiService
 import com.example.esemkalibrary.feature_login.data.LoginUiState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 data class UiState(val isLoading: Boolean, val data: String? = null, val error: String? = null)
 
@@ -57,7 +58,6 @@ class LoginViewModel(context: Context): ViewModel() {
     fun getAndSaveToken() {
         val apiService = ApiService()
         viewModelScope.launch {
-
                 apiService.getToken(
                     uiState.value.email,
                     uiState.value.password
@@ -66,8 +66,11 @@ class LoginViewModel(context: Context): ViewModel() {
                 }.catch { e ->
                     _loginState.value = Output.Error(exception = e)
                 }.collect { response ->
-                    dataStore.setToken(response)
-                    _loginState.value = Output.Success(response)
+                    dataStore.setToken(response.first)
+                    dataStore.setTokenExpiration(response.second)
+                    dataStore.setEmail(uiState.value.email)
+                    dataStore.setPassword(uiState.value.password)
+                    _loginState.value = Output.Success(response.first)
                 }
             }
         Log.e("TAG", "LoginViewModel: ${_uiState.value}")

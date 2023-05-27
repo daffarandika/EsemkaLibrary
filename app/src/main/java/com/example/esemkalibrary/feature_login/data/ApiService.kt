@@ -27,7 +27,7 @@ class ApiService {
         conn.setRequestProperty("Accept", "application/json")
     }
 
-    fun getToken(email: String, password: String): Flow<String> {
+    fun getToken(email: String, password: String): Flow<Pair<String, String>> {
         return flow {
 
             val requestBody = JSONObject()
@@ -47,7 +47,9 @@ class ApiService {
                 inputStream.close()
 
                 val jsonObject = JSONObject(responseBody)
-                jsonObject.getString("token")
+                val token = jsonObject.getString("token")
+                val expiration = jsonObject.getString("expired")
+                Pair<String, String>(token, expiration)
             } else {
                 val errorStream = conn.errorStream
                 val responseBody = errorStream.bufferedReader().use {

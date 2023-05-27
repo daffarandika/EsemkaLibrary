@@ -14,14 +14,36 @@ import kotlinx.coroutines.runBlocking
 
 class LocalStorage(private val context: Context) {
 
-    val token2: String = runBlocking {
-        context.dataStore.data.first().get(TOKEN_KEY) ?: ""
-    }
+
     val token = context.dataStore.data.map {
         it[TOKEN_KEY] ?: ""
     }
+    val tokenExpirationDate = context.dataStore.data.map {
+        it[TOKEN_EXPIRATION_KEY] ?: ""
+    }
+    val email = context.dataStore.data.map {
+        it[EMAIL_KEY] ?: ""
+    }
+    val password = context.dataStore.data.map {
+        it[PASSWORD_KEY] ?: ""
+    }
     suspend fun clearToken() {
         setToken("")
+    }
+    suspend fun setTokenExpiration(tokenExpiration: String) {
+        context.dataStore.edit {
+            it[TOKEN_EXPIRATION_KEY] = tokenExpiration
+        }
+    }
+    suspend fun setEmail(email: String) {
+        context.dataStore.edit {
+            it[EMAIL_KEY] = email
+        }
+    }
+    suspend fun setPassword(password: String) {
+        context.dataStore.edit {
+            it[PASSWORD_KEY] = password
+        }
     }
     val bookIdInCart: Flow<String> = context.dataStore.data
         .map {
@@ -66,5 +88,8 @@ class LocalStorage(private val context: Context) {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore("LocalStorage")
         val TOKEN_KEY = stringPreferencesKey("token")
         val CART_ITEMS_KEY = stringPreferencesKey("cart_items")
+        val TOKEN_EXPIRATION_KEY = stringPreferencesKey("token_expired")
+        val EMAIL_KEY = stringPreferencesKey("email")
+        val PASSWORD_KEY = stringPreferencesKey("password")
     }
 }
